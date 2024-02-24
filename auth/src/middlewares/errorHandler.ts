@@ -8,14 +8,15 @@ const log = logger.withNamespace('errors');
 
 /**
  * Error response middleware for 404 not found. This middleware function should be at the very bottom of the stack.
- *
  */
 export function notFoundError(req: Request, res: Response) {
-  res.status(HttpStatus.NOT_FOUND).json({
-    error: {
-      code: HttpStatus.NOT_FOUND,
-      message: HttpStatus.getStatusText(HttpStatus.NOT_FOUND),
-    },
+  return res.status(HttpStatus.NOT_FOUND).json({
+    errors: [
+      {
+        code: HttpStatus.NOT_FOUND,
+        message: HttpStatus.getStatusText(HttpStatus.NOT_FOUND),
+      },
+    ],
   });
 }
 
@@ -29,7 +30,7 @@ export function genericErrorHandler(
     log.error(err.stack);
   }
 
-  const error = buildError(err);
+  const errors = buildError(err);
 
-  res.status(error.code).json({ error });
+  return res.status(err.statusCode).json({ errors });
 }

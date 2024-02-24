@@ -1,13 +1,51 @@
+import HttpStatus from 'http-status-codes';
+
 import BaseError from './baseError';
 
-export class BadRequestError extends BaseError {}
+export class BadRequestError extends BaseError {
+  statusCode = HttpStatus.BAD_REQUEST;
 
-export class DatabaseError extends BaseError {}
+  serializeErrors() {
+    return [{ message: this.message }];
+  }
+}
 
-export class ForbiddenError extends BaseError {}
+export class DatabaseError extends BaseError {
+  statusCode = HttpStatus.BAD_REQUEST;
 
-export class RowNotFoundError extends BaseError {}
+  serializeErrors() {
+    return [{ message: 'Something went wrong' }];
+  }
+}
 
-export class TokenError extends BaseError {}
+export class ForbiddenError extends BaseError {
+  statusCode = HttpStatus.FORBIDDEN;
 
-export class ValidationError extends BaseError {}
+  serializeErrors() {
+    return [{ message: this.message }];
+  }
+}
+
+export class RowNotFoundError extends BaseError {
+  statusCode = HttpStatus.NOT_FOUND;
+
+  serializeErrors() {
+    return [{ message: this.message }];
+  }
+}
+
+export class TokenError extends BaseError {
+  statusCode = HttpStatus.UNAUTHORIZED;
+
+  serializeErrors() {
+    return [{ message: this.message || 'Invalid token' }];
+  }
+}
+
+export class ValidationError extends BaseError {
+  statusCode = HttpStatus.BAD_REQUEST;
+
+  serializeErrors() {
+    return [{ message: this.message }];
+  }
+}
