@@ -1,6 +1,6 @@
 import * as store from '@leapfrogtechnology/async-store';
 
-// Need way to handle types for store
+// TODO: Need way to handle types for store
 
 export function initializeStore() {
   return store.initializeMiddleware();

@@ -1,7 +1,8 @@
 import winston, { format } from 'winston';
 
+import { X_TRACE_ID } from '@/constants/headers';
+
 import { getShortId, getFromStore } from './store';
-import { X_TRACE_ID } from 'constants/headers';
 
 interface CustomLogger extends winston.Logger {
   withNamespace(namespace: string): winston.Logger;

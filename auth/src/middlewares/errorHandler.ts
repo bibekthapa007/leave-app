@@ -28,9 +28,11 @@ export function genericErrorHandler(
 ) {
   if (err.stack) {
     log.error(err.stack);
+  } else {
+    log.error(err.message);
   }
 
   const errors = buildError(err);
 
-  return res.status(err.statusCode).json({ errors });
+  return res.status(err.statusCode || 500).json({ errors });
 }
