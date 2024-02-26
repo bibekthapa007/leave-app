@@ -1,11 +1,11 @@
 import * as jwt from 'jsonwebtoken';
 
-import config from '@/config';
-import { en } from '@/constants/lang';
-import logger from '@/services/logger';
 import { TokenError } from '@/errors/errors';
 
-const log = logger.withNamespace('utils/jwt');
+import { Any } from '@/types/common';
+
+import config from '@/config';
+import { en } from '@/constants/lang';
 
 /**
  * Create token.
@@ -13,7 +13,7 @@ const log = logger.withNamespace('utils/jwt');
  * @param {Object} data - Data to be tokenized.
  * @returns {String}
  */
-export function createToken(data: Object) {
+export function createToken(data: Any) {
   try {
     const token = jwt.sign(data, config.jwt.secret, config.jwt.signOptions);
 
@@ -29,7 +29,7 @@ export function createToken(data: Object) {
  * @param {Object} data - Data to be tokenized.
  * @returns {String}
  */
-export function createRefreshToken(data: Object) {
+export function createRefreshToken(data: Any) {
   try {
     const token = jwt.sign(data, config.jwt.secret, config.jwt.refreshTokenSignOptions);
 

@@ -1,6 +1,8 @@
 import { Request } from 'express';
 
-export function updateSessions(req: Request, sessions: any): void {
+import { Any } from '@/types/common';
+
+export function updateSessions(req: Request, sessions: Any): void {
   req.session = {
     ...sessions,
     ...req.session,

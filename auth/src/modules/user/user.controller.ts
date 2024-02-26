@@ -1,19 +1,19 @@
-import { Request, NextFunction, Response } from 'express';
+import { Request, Response } from 'express';
 import HttpStatus from 'http-status-codes';
 
-import * as userService from './user.service';
-import * as tokenService from './token.service';
 import { updateSessions } from '@/utils/session';
+
+import * as tokenService from './token.service';
+import * as userService from './user.service';
 
 /**
  * Get all users.
  *
  * @param {Request} req
  * @param {Response} res
- * @param {NextFunction} next
  * @returns {Promise<Response>}
  */
-export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
+export const getUsers = async (req: Request, res: Response) => {
   const users = await userService.getUsers();
 
   return res.status(HttpStatus.OK).json(users);
@@ -24,10 +24,9 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
  *
  * @param {Request} req
  * @param {Response} res
- * @param {NextFunction} next
  * @returns {Promise<Response>}
  */
-export const getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
+export const getCurrentUser = async (req: Request, res: Response) => {
   const currentUser = await userService.getCurrentUser();
 
   return res
@@ -40,10 +39,9 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
  *
  * @param {Request} req
  * @param {Response} res
- * @param {NextFunction} next
  * @returns {Promise<Response>}
  */
-export const signUp = async (req: Request, res: Response, next: NextFunction) => {
+export const signUp = async (req: Request, res: Response) => {
   const user = await userService.signUp(req.body);
 
   const data = await tokenService.generateAccessAndRefreshTokens({
@@ -60,10 +58,9 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
  *
  * @param {Request} req
  * @param {Response} res
- * @param {NextFunction} next
  * @returns {Promise<Response>}
  */
-export const signIn = async (req: Request, res: Response, next: NextFunction) => {
+export const signIn = async (req: Request, res: Response) => {
   const user = await userService.signIn(req.body);
 
   const data = await tokenService.generateAccessAndRefreshTokens({
@@ -80,10 +77,9 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
  *
  * @param {Request} req
  * @param {Response} res
- * @param {NextFunction} next
  * @returns {Promise<Response>}
  */
-export const signOut = async (req: Request, res: Response, next: NextFunction) => {
+export const signOut = async (req: Request, res: Response) => {
   req.session = null;
 
   return res.status(HttpStatus.OK).json({ message: 'User signed out successfully' });

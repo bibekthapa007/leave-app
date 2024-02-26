@@ -1,19 +1,15 @@
-import express, { Application, Router } from 'express';
-import 'express-async-errors';
-
 import cors from 'cors';
 import helmet from 'helmet';
+import mongoose from 'mongoose';
 import compression from 'compression';
 import * as Sentry from '@sentry/node';
 import cookieSession from 'cookie-session';
-
-import mongoose from 'mongoose';
+import express, { Application, Router, json, urlencoded } from 'express';
+import 'express-async-errors';
 
 import config from 'config';
-
 import logger from 'services/logger';
 import { addToStore, initializeStore } from 'services/store';
-
 import { notFoundError, genericErrorHandler } from 'middlewares/errorHandler';
 
 const log = logger.withNamespace('app');
@@ -31,8 +27,8 @@ class App {
     this.app.use(compression());
 
     this.app.set('trust proxy', true);
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(json());
+    this.app.use(urlencoded({ extended: true }));
 
     this.app.use(cookieSession(config.cookieSession));
 

@@ -1,14 +1,13 @@
 import { Router } from 'express';
 
-import config from 'config';
-
-import authMiddleware, { requireAuth } from 'middlewares/auth';
-
 import { addToStore } from '@/services/store';
-import { X_REQUEST_ID, X_TRACE_ID } from 'constants/headers';
 
-import usersRoute from '@/modules/user/user.route';
 import swaggerRoute from '@/modules/swagger/swagger.route';
+import usersRoute from '@/modules/user/user.route';
+
+import config from 'config';
+import { X_REQUEST_ID, X_TRACE_ID } from 'constants/headers';
+import authMiddleware, { requireAuth } from 'middlewares/auth';
 
 const router = Router();
 
@@ -33,6 +32,7 @@ router.use((req, _, next) => {
 });
 
 router.use(authMiddleware);
+
 router.use('/users', usersRoute);
 
 router.use(requireAuth);

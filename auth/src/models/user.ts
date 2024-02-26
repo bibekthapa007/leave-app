@@ -1,5 +1,6 @@
-import { generateHash } from '@/utils/crypto';
 import mongoose, { Document, Model, Schema } from 'mongoose';
+
+import { generateHash } from '@/utils/crypto';
 
 export interface UserAttributes {
   name: string;

@@ -1,10 +1,13 @@
-import logger from '@/services/logger';
-import { BadRequestError } from '@/errors/errors';
 import UserModel, { UserAttributes, UserDocument } from '@/models/user';
 
-import { User } from '@/types/user';
-import { compareHash } from '@/utils/crypto';
+import logger from '@/services/logger';
 import { getFromStore } from '@/services/store';
+
+import { compareHash } from '@/utils/crypto';
+
+import { BadRequestError } from '@/errors/errors';
+
+import { User } from '@/types/user';
 
 const log = logger.withNamespace('modules/user.service');
 

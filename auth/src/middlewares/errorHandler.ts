@@ -1,5 +1,5 @@
-import HttpStatus from 'http-status-codes';
 import { NextFunction, Request, Response } from 'express';
+import HttpStatus from 'http-status-codes';
 
 import logger from 'services/logger';
 import { buildError } from 'utils/buildError';

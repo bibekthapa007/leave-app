@@ -1,9 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 
-import jwt from '@/utils/jwt';
-import { User } from '@/types/user';
 import { addToStore, getFromStore } from '@/services/store';
+
+import { verify } from '@/utils/jwt';
+
 import { ForbiddenError } from '@/errors/errors';
+
+import { User } from '@/types/user';
 
 const authenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const session = req.session;
@@ -16,8 +19,7 @@ const authenticationMiddleware = (req: Request, res: Response, next: NextFunctio
     return;
   }
 
-  const userPayload = jwt.verify(session.accessToken) as { data: User };
-  console.log({ userPayload });
+  const userPayload = verify(session.accessToken) as { data: User };
 
   addToStore({ currentUser: userPayload?.data });
 

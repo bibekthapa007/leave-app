@@ -3,23 +3,31 @@ module.exports = {
   parserOptions: {
     project: 'tsconfig.json',
     tsconfigRootDir: __dirname,
-    sourceType: 'module'
+    sourceType: 'module',
   },
   plugins: ['@typescript-eslint/eslint-plugin', 'prettier', 'import'],
   extends: [
-    'eslint-recommended',
+    'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
-    'pulgin:import/errors',
-    'pulgin:import/warnings',
-    'pulgin:import/typescript'
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
   ],
   root: true,
   env: {
     node: true,
-    jest: true
+    jest: true,
   },
   ignorePatterns: ['.eslintrc.js', 'tsconfig.json'],
+  settings: {
+    'import/resolver': {
+      typescript: {
+        project: './tsconfig.json',
+      },
+    },
+  },
   rules: {
     // '@typescript-eslint/interface-name-prefix': 'off',
     // '@typescript-eslint/explicit-function-return-type': 'off',
@@ -33,17 +41,65 @@ module.exports = {
         singleQuote: true,
         trailingComma: 'es5',
         arrowParens: 'avoid',
-        semi: true
-      }
+        semi: true,
+      },
     ],
+    'import/no-unresolved': 'error',
     'import/order': [
       'error',
       {
         groups: [
-          ['builtin', 'external'],
-          ['internal', 'parent', 'sibling', 'index']
-        ]
-      }
-    ]
-  }
+          'builtin',
+          'external',
+          'internal',
+          ['sibling', 'parent'], // <- Relative imports, the sibling and parent types they can be mingled together
+          'index',
+          'unknown',
+        ],
+        pathGroups: [
+          {
+            pattern: '@/models/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '@/middleware/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '@/routes/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '@/services/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '@/utils/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '@/errors/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '@/types/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '@/**',
+            group: 'internal',
+            position: 'before',
+          },
+        ],
+        'newlines-between': 'always',
+      },
+    ],
+  },
 };

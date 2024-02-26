@@ -1,10 +1,10 @@
-import winston, { format } from 'winston';
+import winston, { Logger, createLogger, format, transports } from 'winston';
 
 import { X_TRACE_ID } from '@/constants/headers';
 
 import { getShortId, getFromStore } from './store';
 
-interface CustomLogger extends winston.Logger {
+interface CustomLogger extends Logger {
   withNamespace(namespace: string): winston.Logger;
 }
 
@@ -19,14 +19,14 @@ const logFormat = format.printf(info => {
   return `${info.timestamp} [${info.level}] [${traceId}] [${formattedReqID}] [${formattedNamespace}]: ${info.message}`;
 });
 
-const logger = winston.createLogger({
+const logger = createLogger({
   format: format.combine(
     format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     format.metadata({ fillExcept: ['message', 'level', 'timestamp'] }),
     logFormat
   ),
   transports: [
-    new winston.transports.Console({
+    new transports.Console({
       format: format.combine(format.colorize()),
       level: 'info',
     }),

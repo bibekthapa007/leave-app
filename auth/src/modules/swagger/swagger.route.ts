@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import swaggerUi from 'swagger-ui-express';
+import { serve, setup } from 'swagger-ui-express';
 
 import swaggerDocument from '../../swagger-output.json';
 
 const router = Router();
 
-router.use('/', swaggerUi.serve);
-router.get('/', swaggerUi.setup(swaggerDocument));
+router.use('/', serve);
+router.get('/', setup(swaggerDocument));
 
 export default router;

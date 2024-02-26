@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { validateReqBody } from '@/utils/validator';
+
 import { requireAuth } from '@/middlewares/auth';
 
 import * as userController from './user.controller';
