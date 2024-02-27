@@ -1,6 +1,5 @@
 import cors from 'cors';
 import helmet from 'helmet';
-import mongoose from 'mongoose';
 import compression from 'compression';
 import * as Sentry from '@sentry/node';
 import cookieSession from 'cookie-session';
@@ -12,10 +11,12 @@ import logger from 'services/logger';
 import { addToStore, initializeStore } from 'services/store';
 import { notFoundError, genericErrorHandler } from 'middlewares/errorHandler';
 
+import route from './route';
+
 const log = logger.withNamespace('app');
 
 class App {
-  private app: Application;
+  public app: Application;
 
   constructor(routes: Router) {
     this.app = express();
@@ -37,20 +38,15 @@ class App {
     this.app.use((req, res, next) => {
       addToStore({ session: req.session });
 
-      console.log(req.session);
-
       next();
     });
 
     this.initializeAPIRoutes(routes);
     this.initializeErrorHandlers();
-    this.connectToDatabase();
   }
 
   initializeAPIRoutes(routes: Router) {
     const baseURL = config.app.baseURL;
-
-    console.log(baseURL, 'BaseUrl');
 
     this.app.use(baseURL, routes);
   }
@@ -92,19 +88,6 @@ class App {
     });
   }
 
-  async connectToDatabase() {
-    const dbURI = config.db.URI;
-    try {
-      const db = await mongoose.connect(dbURI);
-
-      console.log(db.connection.readyState);
-
-      log.info('Connected to database successfully.');
-    } catch (error) {
-      log.error('Error connecting to database', error);
-    }
-  }
-
   public listen(port: number) {
     this.app.listen(port, () => {
       console.log(`Server started at http://localhost:${port}`);
@@ -116,5 +99,7 @@ class App {
     this.app.use(notFoundError);
   }
 }
+
+export const app = new App(route).app;
 
 export default App;

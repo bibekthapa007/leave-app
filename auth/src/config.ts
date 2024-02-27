@@ -1,10 +1,10 @@
-import { config } from 'dotenv-safe';
+import { config as dotEnvConfig } from 'dotenv-safe';
 
 const pathToEnv = __dirname + '/../.env';
 
-config({ path: pathToEnv });
+dotEnvConfig({ path: pathToEnv });
 
-const serverConfig = {
+const config = {
   NODE_ENV: process.env.NODE_ENV,
   app: {
     name: process.env.APP_NAME || 'auth-server',
@@ -32,8 +32,8 @@ const serverConfig = {
   },
   cookieSession: {
     signed: false,
-    secure: true,
+    secure: process.env.NODE_ENV !== 'test',
   },
 } as const;
 
-export default serverConfig;
+export default config;

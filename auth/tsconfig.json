@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./*"]
     },
     "module": "commonjs",
     "declaration": true,
@@ -22,9 +22,10 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
 
+  "types": ["node", "jest"],
   "exclude": ["node_modules", "dist", "coverage"],
-  "include": ["src/**/*.ts", "src/**/*.json", ".env"],
+  "include": ["src/**/*.ts", "test/**/*.ts", "src/**/*.json", ".env"]
 }
