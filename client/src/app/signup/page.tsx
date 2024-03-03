@@ -1,20 +1,40 @@
 'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { signUp } from '@/services/auth';
 
 import InputField from '@/components/InputField';
+import Alert from '@/components/Alert';
 
 import paths from '@/utils/path';
+import { parseError } from '@/utils/handleError';
 
 export default function SignUp() {
+  const router = useRouter();
+  const [errors, setErrors] = useState<CustomError[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
-    await signUp(data as any);
+    try {
+      setIsSubmitting(true);
+      await signUp(data as any);
+
+      router.push(paths.home);
+    } catch (error) {
+      const errors = parseError(error);
+
+      setErrors(errors as CustomError[]);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -33,12 +53,15 @@ export default function SignUp() {
 
           <InputField type="text" label="Password" name="password" required />
 
+          <Alert errors={errors} />
+
           <div>
             <button
+              disabled={isSubmitting}
               type="submit"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Sign Up
+              {!isSubmitting ? 'Sign Up' : 'Submitting'}
             </button>
           </div>
         </form>

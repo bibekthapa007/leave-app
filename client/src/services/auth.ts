@@ -4,28 +4,24 @@ import api from '@/constants/api';
 
 export const signUp = async (data: { email: string; name: string; password: string }) => {
   try {
-    const response = await axios.post(api.auth.signUp, data);
+    const response = await axios.post(api.auth.signUp, data, {
+      withCredentials: false,
+    });
 
     return response.data;
   } catch (error: any) {
-    if (error?.response?.data?.errors) {
-      return error.response.data.errors;
-    }
-
-    if (error?.response?.data) {
-      return error.response.data;
-    }
-
-    return error;
+    throw error;
   }
 };
 
 export const signIn = async (data: { email: string; password: string }) => {
   try {
-    const response = await axios.post(api.auth.signUp, data);
+    const response = await axios.post(api.auth.signIn, data, {
+      withCredentials: false,
+    });
 
     return response.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
