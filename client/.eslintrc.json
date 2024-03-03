@@ -1,0 +1,45 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "import/no-unresolved": "error",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", ["sibling", "parent"], "index", "unknown"],
+        "pathGroups": [
+          {
+            "pattern": "@/services/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/components/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/hooks/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/utils/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/types/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/**",
+            "group": "internal",
+            "position": "before"
+          }
+        ],
+        "newlines-between": "always"
+      }
+    ]
+  }
+}
