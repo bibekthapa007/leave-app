@@ -6,12 +6,14 @@ import cookieSession from 'cookie-session';
 import express, { Application, Router, json, urlencoded } from 'express';
 import 'express-async-errors';
 
+import requestLogger from '@/middlewares/requestLogger';
+import { notFoundError, genericErrorHandler } from '@/middlewares/errorHandler';
+
 import config from 'config';
 import logger from 'services/logger';
 import { addToStore, initializeStore } from 'services/store';
-import { notFoundError, genericErrorHandler } from 'middlewares/errorHandler';
 
-import route from './route';
+import { connectToDatabase } from './db';
 
 const log = logger.withNamespace('app');
 
@@ -35,14 +37,24 @@ class App {
 
     this.app.use(initializeStore());
 
-    this.app.use((req, res, next) => {
+    this.app.use(requestLogger);
+
+    this.app.use(async (req, res, next) => {
       addToStore({ session: req.session });
 
-      next();
+      return next();
     });
+
+    this.connectToDatabase();
 
     this.initializeAPIRoutes(routes);
     this.initializeErrorHandlers();
+  }
+
+  async connectToDatabase() {
+    if (config.NODE_ENV !== 'test') {
+      await connectToDatabase();
+    }
   }
 
   initializeAPIRoutes(routes: Router) {
@@ -99,7 +111,5 @@ class App {
     this.app.use(notFoundError);
   }
 }
-
-export const app = new App(route).app;
 
 export default App;

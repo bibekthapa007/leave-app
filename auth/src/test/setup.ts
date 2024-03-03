@@ -2,9 +2,12 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
-import { app } from '../app';
+import route from '@/route';
+
+import App from '../app';
 
 let mongoServer: MongoMemoryServer;
+export const app = new App(route).app;
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
