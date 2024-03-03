@@ -16,3 +16,12 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: bibekthapa123/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        infer:
+          - "**/*.ts"
+          - "**/*.tsx"
+          - "**/*.css"
