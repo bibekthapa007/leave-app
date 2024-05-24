@@ -1,19 +1,20 @@
-'use client';
-
-import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Link } from '@chakra-ui/react';
+import { useHistory } from 'react-router-dom';
 
-import { signUp } from '@/services/auth';
+import { signUp } from 'services/auth';
 
-import InputField from '@/components/InputField';
-import Alert from '@/components/Alert';
+import InputField from 'components/InputField';
+import Alert from 'components/Alert';
 
-import paths from '@/utils/path';
-import { parseError } from '@/utils/handleError';
+import paths from 'utils/path';
+import { parseError } from 'utils/handleError';
+
+import { Any, CustomError } from 'types/common';
 
 export default function SignUp() {
-  const router = useRouter();
+  const history = useHistory();
+
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -25,9 +26,9 @@ export default function SignUp() {
 
     try {
       setIsSubmitting(true);
-      await signUp(data as any);
+      await signUp(data as Any);
 
-      router.push(paths.home);
+      history.push(paths.home);
     } catch (error) {
       const errors = parseError(error);
 

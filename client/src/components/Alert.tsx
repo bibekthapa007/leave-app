@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { CustomError } from 'types/common';
+
 function Alert(props: { errors: CustomError[] | null }) {
   const { errors } = props;
 

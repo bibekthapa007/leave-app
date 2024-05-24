@@ -1,18 +1,18 @@
-'use client';
-import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Link, useHistory } from 'react-router-dom';
 
-import { signIn } from '@/services/auth';
+import { signIn } from 'services/auth';
 
-import InputField from '@/components/InputField';
-import Alert from '@/components/Alert';
+import InputField from 'components/InputField';
+import Alert from 'components/Alert';
 
-import paths from '@/utils/path';
-import { parseError } from '@/utils/handleError';
+import paths from 'utils/path';
+import { parseError } from 'utils/handleError';
+
+import { Any, CustomError } from 'types/common';
 
 export default function SignIn() {
-  const router = useRouter();
+  const history = useHistory();
 
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -26,9 +26,9 @@ export default function SignIn() {
     try {
       setIsSubmitting(true);
       setErrors([]);
-      await signIn(data as any);
+      await signIn(data as Any);
 
-      router.push(paths.home);
+      history.push(paths.home);
     } catch (error) {
       const errors = parseError(error);
 
@@ -68,7 +68,7 @@ export default function SignIn() {
         <p className="mt-10 text-center text-sm text-gray-500">
           Not a member?
           <Link
-            href={paths.signup}
+            to={paths.signup}
             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
           >
             Sign Up

@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
-import { redirect } from 'next/navigation';
+import { useHistory } from 'react-router-dom';
 
-import { buildUrl } from '@/utils/string';
-import paths from '@/utils/path';
+import paths from 'utils/path';
+import { buildUrl } from 'utils/string';
 
-import api from '@/constants/api';
+import api from 'constants/api';
 
-import { deleteCookie, getServerHeader } from './server';
+import { getServerHeader } from './server';
 
 export const signUp = async (data: { email: string; name: string; password: string }) => {
   try {
@@ -16,6 +17,7 @@ export const signUp = async (data: { email: string; name: string; password: stri
 
     return response.data;
   } catch (error: any) {
+    console.log(error, 'error');
     throw error;
   }
 };
@@ -28,6 +30,7 @@ export const signIn = async (data: { email: string; password: string }) => {
 
     return response.data;
   } catch (error) {
+    console.log(error, 'error');
     throw error;
   }
 };
@@ -44,7 +47,8 @@ export const getCurrentUser = async () => {
   } catch (error: any) {
     if (error?.response?.status === 401) {
       // TODO: handle redirect
-      redirect(paths.signin);
+      const history = useHistory();
+      history.push(paths.signin);
     }
 
     throw error;

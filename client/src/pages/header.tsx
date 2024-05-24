@@ -1,9 +1,11 @@
-import Link from 'next/link';
 import React from 'react';
+import { Link } from '@chakra-ui/react';
 
-import paths from '@/utils/path';
+import paths from 'utils/path';
 
-function Header({ currentUser }: { currentUser: any }) {
+import { Any } from 'types/common';
+
+function Header({ currentUser }: { currentUser: Any }) {
   return (
     <div className="flex justify-between m-2 p-2">
       <Link href={paths.home} className="semibold">

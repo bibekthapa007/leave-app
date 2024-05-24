@@ -1,4 +1,4 @@
-import { notify } from '@/components/Toast';
+import { notify } from 'components/Toast';
 
 interface ToastParams {
   className?: string;

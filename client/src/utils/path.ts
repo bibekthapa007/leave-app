@@ -6,10 +6,10 @@
 //  <Link  href = {paths.category('id-999')} />
 
 const paths = {
-  home: '/',
-  signup: '/signup',
-  signin: '/signin',
-  products: '/products',
+  home: '',
+  signup: 'signup',
+  signin: 'signin',
+  products: 'products',
 
   myAds(id: string | null) {
     if (id) {

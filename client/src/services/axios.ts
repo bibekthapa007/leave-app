@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import api from '@/constants/api';
+import api from 'constants/api';
 
 import { getServerHeader } from './server';
 
@@ -19,7 +19,7 @@ const customAxios = async () => {
 
   console.log(headers, 'eeeeeeeeeeeee');
 
-  return axios.create({ baseURL: api.baseUrl, headers });
+  return axios.create({ baseURL: api.baseUrl });
 };
 
 export default customAxios;
