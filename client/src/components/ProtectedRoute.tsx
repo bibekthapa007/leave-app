@@ -1,12 +1,12 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
-import paths from 'utils/path';
+import useUserStore from 'stores/useUserStore';
 
 import { User } from 'types/User';
 import { Role } from 'types/common';
 
-import useUserStore from 'stores/useUserStore';
+import paths from 'constants/paths';
 
 interface ProtectedRouteProps {
   exact?: boolean;

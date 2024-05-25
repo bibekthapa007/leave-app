@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from '@chakra-ui/react';
 
-import paths from 'utils/path';
-
 import { Any } from 'types/common';
+
+import paths from 'constants/paths';
 
 function Header({ currentUser }: { currentUser: Any }) {
   return (

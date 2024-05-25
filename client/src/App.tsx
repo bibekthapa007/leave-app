@@ -1,20 +1,30 @@
-import React, { useEffect } from 'react';
-import { ChakraProvider, Box, Text, Link, VStack, Code, Grid, theme } from '@chakra-ui/react';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { useEffect } from 'react';
+import { ChakraProvider, theme } from '@chakra-ui/react';
+import { BrowserRouter, Route } from 'react-router-dom';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+
+import SignIn from 'pages/signin/SignIn';
+
+import useUserStore from 'stores/useUserStore';
 
 import AuthRoute from 'components/AuthRoute';
 import Home from 'components/Home';
 
-import paths from 'utils/path';
 import { createRoute } from 'utils/route';
 
 import { User } from 'types/User';
 
-import Dashboard from 'pages/dashboard/Dashboard';
-import SignIn from 'pages/signin/SignIn';
+import paths from 'constants/paths';
 
-import useUserStore from './stores/useUserStore';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
+import './styles.css';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export function App() {
   const { data: user, loading, fetchUser, updateUser, removeUser } = useUserStore();
@@ -40,7 +50,7 @@ export function App() {
     };
 
     updateUser(fakeUser);
-    removeUser();
+    // removeUser();
   }, [updateUser]);
 
   if (loading) {
@@ -48,15 +58,16 @@ export function App() {
   }
 
   return (
-    <ChakraProvider theme={theme}>
-      <ColorModeSwitcher justifySelf="flex-end" />
-      <BrowserRouter>
-        <Route exact path={createRoute([paths.signin])} component={SignIn} />
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider theme={theme}>
+        <BrowserRouter>
+          <Route exact path={createRoute([paths.signin])} component={SignIn} />
 
-        <AuthRoute path={paths.home}>
-          <Route path={createRoute([])} component={Home} />
-        </AuthRoute>
-      </BrowserRouter>
-    </ChakraProvider>
+          <AuthRoute path={paths.home}>
+            <Route path={createRoute([])} component={Home} />
+          </AuthRoute>
+        </BrowserRouter>
+      </ChakraProvider>
+    </QueryClientProvider>
   );
 }

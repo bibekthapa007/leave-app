@@ -15,3 +15,7 @@ export interface Designation {
   id: number;
   name: string;
 }
+
+export interface DefaultObject {
+  [key: string]: Any;
+}

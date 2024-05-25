@@ -9,6 +9,10 @@ const api = {
     signIn: '/api/auth/users/signin',
     currentUser: '/api/auth/users/currentuser',
   },
+  leave: {
+    leave: '/api/leave',
+    updateLeave: '/api/leave/:id',
+  },
 };
 
 export default api;

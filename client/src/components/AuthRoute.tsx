@@ -1,9 +1,9 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
-import paths from 'utils/path';
-
 import useUserStore from 'stores/useUserStore';
+
+import paths from 'constants/paths';
 
 interface AuthRouteProps {
   exact?: boolean;

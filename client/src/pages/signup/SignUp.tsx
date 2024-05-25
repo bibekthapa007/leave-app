@@ -7,10 +7,11 @@ import { signUp } from 'services/auth';
 import InputField from 'components/InputField';
 import Alert from 'components/Alert';
 
-import paths from 'utils/path';
 import { parseError } from 'utils/handleError';
 
 import { Any, CustomError } from 'types/common';
+
+import paths from 'constants/paths';
 
 export default function SignUp() {
   const history = useHistory();
