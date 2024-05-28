@@ -7,6 +7,10 @@ export const signInSchema = Joi.object({
 
 export const signUpSchema = Joi.object({
   email: Joi.string().email().required(),
+  country: Joi.string().required(),
+  department: Joi.string().required(),
+  designationId: Joi.number().required(),
   password: Joi.string().min(8).max(20).required(),
   name: Joi.string().required(),
+  phone: Joi.string().required(),
 });

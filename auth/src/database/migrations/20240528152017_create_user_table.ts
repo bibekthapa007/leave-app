@@ -13,6 +13,7 @@ export async function up(knex: Knex): Promise<void> {
       .unsigned()
       .references('id')
       .inTable('designations');
+    table.string('password', 100).notNullable();
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.integer('created_by').unsigned();
     table.timestamp('updated_at').defaultTo(knex.fn.now());

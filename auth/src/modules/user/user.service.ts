@@ -1,14 +1,20 @@
 import { Knex } from 'knex';
 
+import UserRoleModel from '@/modules/roles/userRole.model';
+import DesignationModel from '@/modules/designations/designation.model';
+import RoleModel from '@/modules/roles/role.model';
+
 import logger from '@/services/logger';
 import { getFromStore } from '@/services/store';
 
-import { compareHash } from '@/utils/crypto';
+import { compareHash, generateHash } from '@/utils/crypto';
 
 import { BadRequestError } from '@/errors/errors';
 
 import { User } from '@/types/user';
-import { Any } from '@/types/common';
+import { Any, Role } from '@/types/common';
+
+import db from '@/db';
 
 import UserModel from './user.model';
 
@@ -66,14 +72,40 @@ export const signIn = async (body: { email: string; password: string }): Promise
  * @param user - The user object containing the sign up details.
  * @returns A promise that resolves when the user is signed up.
  */
-export const signUp = async (user: User): Promise<User> => {
-  log.info(`Signing up new user: ${user.email}`);
+export const signUp = async (userBody: { password: string } & Omit<User, 'id'>): Promise<User> => {
+  log.info(`Signing up new user: ${userBody.email}`);
 
-  const [existingUser] = await UserModel.fetchUserDetails({ email: user.email });
+  const hashedPassword = await generateHash(userBody.password);
+
+  const [existingUser] = await UserModel.fetchUserDetails({ email: userBody.email });
 
   if (existingUser) {
     throw new BadRequestError('User with email already exists.');
   }
 
-  return existingUser;
+  const insertedUserId = await db.transaction(async (trx: Knex.Transaction): Promise<number> => {
+    const designation = await DesignationModel.fetchById(userBody.designationId, trx);
+
+    if (!designation) {
+      throw new BadRequestError('Invalid designation.');
+    }
+
+    const roles = await RoleModel.fetch();
+
+    const userRoleId = roles.find((role: Role) => role.name === 'User')?.id;
+
+    if (!userRoleId) {
+      throw new BadRequestError('User role not found.');
+    }
+
+    const [userId] = await UserModel.insert({ ...userBody, password: hashedPassword }, trx);
+
+    await UserRoleModel.insert({ userId, roleId: userRoleId }, trx);
+
+    return userId;
+  });
+
+  const user = await UserModel.fetchById(insertedUserId);
+
+  return user;
 };

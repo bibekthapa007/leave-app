@@ -1,6 +1,20 @@
+import { Designation, Role } from './common';
+
 export interface User {
   id: number;
-  fullName: string;
+  name: string;
   email: string;
-  password?: string;
+  country: string;
+  department: string;
+  designationId?: number;
+  designation: Designation;
+  phone: string;
+  roles: Role[];
 }
+
+export interface UserFilters {
+  id?: number;
+  email?: string;
+}
+
+export type UserBody = Omit<User, 'id'>;
