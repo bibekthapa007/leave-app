@@ -59,6 +59,11 @@ module.exports = {
         ],
         pathGroups: [
           {
+            pattern: '@/modules/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
             pattern: '@/models/**',
             group: 'internal',
             position: 'before',

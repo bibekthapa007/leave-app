@@ -1,9 +1,11 @@
 import { Router } from 'express';
 
-import { addToStore } from '@/services/store';
-
 import swaggerRoute from '@/modules/swagger/swagger.route';
 import usersRoute from '@/modules/user/user.route';
+import rolesRoute from '@/modules/roles/role.route';
+import designationsRoute from '@/modules/designations/designation.route';
+
+import { addToStore } from '@/services/store';
 
 import config from 'config';
 import { X_REQUEST_ID, X_TRACE_ID } from 'constants/headers';
@@ -35,6 +37,8 @@ router.use((req, _, next) => {
 // router.use(authMiddleware);
 
 router.use('/users', usersRoute);
+router.use('/roles', rolesRoute);
+router.use('/designations', designationsRoute);
 
 router.use(requireAuth);
 router.use('/api-docs', swaggerRoute);
