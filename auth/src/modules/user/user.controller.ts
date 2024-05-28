@@ -14,7 +14,7 @@ import * as userService from './user.service';
  * @returns {Promise<Response>}
  */
 export const getUsers = async (req: Request, res: Response) => {
-  const users = await userService.getUsers();
+  const users = await userService.getUsers({});
 
   return res.status(HttpStatus.OK).json(users);
 };

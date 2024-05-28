@@ -13,8 +13,6 @@ import config from 'config';
 import logger from 'services/logger';
 import { addToStore, initializeStore } from 'services/store';
 
-import { connectToDatabase } from './db';
-
 const log = logger.withNamespace('app');
 
 class App {
@@ -53,7 +51,7 @@ class App {
 
   async connectToDatabase() {
     if (config.NODE_ENV !== 'test') {
-      await connectToDatabase();
+      // await connectToDatabase();
     }
   }
 

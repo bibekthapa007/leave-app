@@ -1,4 +1,4 @@
-import { config as dotEnvConfig } from 'dotenv-safe';
+import { config as dotEnvConfig } from 'dotenv';
 
 const pathToEnv = __dirname + '/../.env';
 
@@ -16,8 +16,15 @@ const config = {
     dsn: '',
     environment: '',
   },
-  db: {
-    URI: process.env.DB_URI || 'mongodb://auth-mongo-srv:27017/auth',
+  database: {
+    client: process.env.DB_CLIENT,
+    port: +process.env.DB_PORT,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    charset: 'utf8',
+    timezone: 'UTC',
   },
   jwt: {
     secret: process.env.JWT_SECRET || 'secret',

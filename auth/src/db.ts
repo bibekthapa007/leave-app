@@ -1,22 +1,33 @@
-import mongoose from 'mongoose';
+import knex, { Knex } from 'knex';
+import camelCase from 'camelize';
+import toSnakeCase from 'to-snake-case';
 
-import logger from '@/services/logger';
+import { baseKnexConfig } from 'knexFile';
 
-import config from './config';
+import { Any } from './types/common';
 
-const log = logger.withNamespace('app');
+const knexConfig: Knex.Config = {
+  ...baseKnexConfig,
+  connection: {
+    ...baseKnexConfig.connection,
+    typeCast: (field: Any, next: Any) => {
+      if (field.type == 'DATE') {
+        return field.string();
+      }
 
-async function connectToDatabase() {
-  const dbURI = config.db.URI;
-  try {
-    const db = await mongoose.connect(dbURI);
+      return next();
+    },
+  },
+  wrapIdentifier: (value: string, origImpl: (value: string) => string) => {
+    if (value === '*') {
+      return origImpl(value);
+    }
 
-    console.log(db.connection.readyState);
+    return origImpl(toSnakeCase(value));
+  },
+  postProcessResponse: result => {
+    return camelCase(result);
+  },
+};
 
-    log.info('Connected to database successfully.');
-  } catch (error) {
-    log.error('Error connecting to database', error);
-  }
-}
-
-export { connectToDatabase };
+export default knex(knexConfig);

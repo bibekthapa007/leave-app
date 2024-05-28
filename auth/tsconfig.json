@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
+    "baseUrl": "src",
     "paths": {
       "@/*": ["./*"]
     },
@@ -22,7 +22,8 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "rootDir": "./"
   },
 
   "types": ["node", "jest"],

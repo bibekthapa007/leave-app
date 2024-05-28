@@ -31,7 +31,8 @@ router.use((req, _, next) => {
   next();
 });
 
-router.use(authMiddleware);
+// TODO: uncommet after auth setup
+// router.use(authMiddleware);
 
 router.use('/users', usersRoute);
 
