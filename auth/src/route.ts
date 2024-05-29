@@ -14,6 +14,8 @@ import authMiddleware, { requireAuth } from 'middlewares/auth';
 const router = Router();
 
 router.get('/', (req, res) => {
+  res.cookie('cookieName', 'cookieValue', { httpOnly: false });
+
   res.json({
     app: config.app.name,
     version: config.app.version,
@@ -34,7 +36,7 @@ router.use((req, _, next) => {
 });
 
 // TODO: uncommet after auth setup
-// router.use(authMiddleware);
+router.use(authMiddleware);
 
 router.use('/users', usersRoute);
 router.use('/roles', rolesRoute);

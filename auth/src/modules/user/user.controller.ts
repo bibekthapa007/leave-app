@@ -26,12 +26,12 @@ export const getUsers = async (req: Request, res: Response) => {
  * @param {Response} res
  * @returns {Promise<Response>}
  */
-export const getCurrentUser = async (req: Request, res: Response) => {
-  const currentUser = await userService.getCurrentUser();
+export const fetchCurrentUser = async (req: Request, res: Response) => {
+  const currentUser = await userService.fetchCurrentUser();
 
   return res
     .status(HttpStatus.OK)
-    .json({ message: 'Current user fetched successfully.', currentUser });
+    .json({ message: 'Current user fetched successfully.', data: currentUser });
 };
 
 /**
@@ -44,13 +44,12 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 export const signUp = async (req: Request, res: Response) => {
   const user = await userService.signUp(req.body);
 
-  const data = await tokenService.generateAccessAndRefreshTokens({
+  const tokens = await tokenService.generateAccessAndRefreshTokens({
     id: user.id,
     email: user.email,
   });
-  updateSessions(req, data);
 
-  return res.status(HttpStatus.CREATED).json({ message: 'User signed up successfully.', user });
+  return res.json({ message: 'User signed up successfully.', data: { user, tokens } });
 };
 
 /**
@@ -63,13 +62,12 @@ export const signUp = async (req: Request, res: Response) => {
 export const signIn = async (req: Request, res: Response) => {
   const user = await userService.signIn(req.body);
 
-  const data = await tokenService.generateAccessAndRefreshTokens({
+  const tokens = await tokenService.generateAccessAndRefreshTokens({
     id: user.id,
     email: user.email,
   });
-  updateSessions(req, data);
 
-  return res.status(HttpStatus.OK).json({ message: 'User signed in successfully', user });
+  return res.json({ message: 'User signed in successfully', data: { user, tokens } });
 };
 
 /**
@@ -80,7 +78,8 @@ export const signIn = async (req: Request, res: Response) => {
  * @returns {Promise<Response>}
  */
 export const signOut = async (req: Request, res: Response) => {
-  req.session = null;
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
 
-  return res.status(HttpStatus.OK).json({ message: 'User signed out successfully' });
+  return res.json({ message: 'User signed out successfully' });
 };

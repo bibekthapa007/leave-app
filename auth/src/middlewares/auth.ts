@@ -9,9 +9,10 @@ import { ForbiddenError } from '@/errors/errors';
 import { User } from '@/types/user';
 
 const authenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const session = req.session;
+  const authHeader = req.headers['authorization'];
+  const accessToken = authHeader.startsWith('Bearer ') && authHeader.split(' ')[1];
 
-  if (!session?.accessToken) {
+  if (!accessToken) {
     addToStore({ currentUser: null });
 
     next();
@@ -19,7 +20,7 @@ const authenticationMiddleware = (req: Request, res: Response, next: NextFunctio
     return;
   }
 
-  const userPayload = verify(session.accessToken) as { data: User };
+  const userPayload = verify(accessToken) as { data: User };
 
   addToStore({ currentUser: userPayload?.data });
 

@@ -45,6 +45,23 @@ export const getCurrentUser = async (): Promise<User | null> => {
 };
 
 /**
+ * Fetch current user.
+ *
+ * @returns A promise that resolves to an array of User objects.
+ */
+export const fetchCurrentUser = async (): Promise<User | null> => {
+  log.info('Fetching current user.');
+
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser?.id) {
+    return null;
+  }
+
+  return UserModel.fetchById(currentUser?.id);
+};
+
+/**
  * Sign in the user.
  *
  * @param body - The user object containing the sign in details
@@ -53,7 +70,7 @@ export const getCurrentUser = async (): Promise<User | null> => {
 export const signIn = async (body: { email: string; password: string }): Promise<User> => {
   log.info(`Signing in user with email: ${body.email}`);
 
-  const [existingUser] = await UserModel.fetchUserDetails({ email: body.email });
+  const [existingUser] = await UserModel.fetch({ email: body.email });
 
   if (!existingUser) {
     throw new BadRequestError('User not found.');
@@ -63,7 +80,7 @@ export const signIn = async (body: { email: string; password: string }): Promise
     throw new BadRequestError('Email or password does not match.');
   }
 
-  return existingUser;
+  return await UserModel.fetchUserDetails({ email: body.email });
 };
 
 /**

@@ -1,12 +1,10 @@
-import { Request } from 'express';
-
 import { Any } from '@/types/common';
 
-export function updateSessions(req: Request, sessions: Any): void {
-  req.session = {
-    ...sessions,
-    ...req.session,
-  };
+import config from '@/config';
+
+export function updateSessions(res: Any, data: Any): void {
+  res.cookie('accessToken', data.accessToken, config.cookie.options);
+  res.cookie('refreshToken', data.refreshToken, config.cookie.options);
 
   return;
 }

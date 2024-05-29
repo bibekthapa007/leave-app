@@ -2,8 +2,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import * as Sentry from '@sentry/node';
-import cookieSession from 'cookie-session';
 import express, { Application, Router, json, urlencoded } from 'express';
+import cookieParser from 'cookie-parser';
 import 'express-async-errors';
 
 import requestLogger from '@/middlewares/requestLogger';
@@ -31,7 +31,7 @@ class App {
     this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
 
-    this.app.use(cookieSession(config.cookieSession));
+    this.app.use(cookieParser());
 
     this.app.use(initializeStore());
 

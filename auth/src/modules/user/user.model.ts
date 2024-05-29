@@ -5,6 +5,8 @@ import BaseModel from '@/models/baseModel';
 import { User, UserBody, UserFilters } from '@/types/user';
 import { Any } from '@/types/common';
 
+import db from '@/db';
+
 class UserModel extends BaseModel {
   static table = 'users';
 
@@ -26,8 +28,18 @@ class UserModel extends BaseModel {
    * @param {Knex.Transaction} trx
    * @returns
    */
-  static fetch(id: number, trx?: Knex.Transaction) {
-    return this.queryBuilder(trx).select('*').from('users as u').where('id', id).first();
+  static fetch(filter?: { id?: number; email?: string }, trx?: Knex.Transaction) {
+    const query = this.queryBuilder(trx).select('*').from('users as u');
+
+    if (filter?.id) {
+      query.where('u.id', filter.id);
+    }
+
+    if (filter?.email) {
+      query.where('u.email', filter.email);
+    }
+
+    return query;
   }
 
   /**
@@ -49,11 +61,30 @@ class UserModel extends BaseModel {
   }
 
   static fetchUserDetails(filters: UserFilters, trx?: Knex.Transaction): Knex.QueryBuilder {
+    const rolesQuery = this.queryBuilder(trx)
+      .from('user_roles as ur')
+      .leftJoin('roles as r', 'ur.role_id', 'r.id')
+      .select(
+        'ur.user_id',
+        db.raw("JSON_ARRAYAGG(JSON_OBJECT('id', ur.id, 'name', r.name)) as roles")
+      )
+      .groupBy('ur.user_id');
+
     const query = this.queryBuilder(trx)
-      .select('u.*')
+      .select(
+        'u.id as id',
+        'u.name as name',
+        'u.email as email',
+        'u.country as country',
+        'u.department as department',
+        'u.phone as phone',
+        'u.designation_id as designationId',
+        'd.id as designation_id',
+        'd.name as designation_name',
+        'roles.roles as roles'
+      )
       .from('users as u')
-      .leftJoin('user_roles as ur', 'ur.user_id', 'u.id')
-      .leftJoin('roles as r', 'r.id', 'ur.role_id')
+      .leftJoin(rolesQuery.as('roles'), 'u.id', 'roles.user_id')
       .leftJoin('designations as d', 'u.designation_id', 'd.id');
 
     this.injectFilter(query, filters);
@@ -85,6 +116,25 @@ class UserModel extends BaseModel {
       .where('id', userId);
 
     return query;
+  }
+
+  static mapToModel(user: Any): User {
+    const data = user.id && {
+      id: user.id,
+      name: user.name,
+      country: user.country,
+      designationId: user.designationId,
+      email: user.email,
+      phone: user.phone,
+      department: user.department,
+      designation: user.designationId && {
+        id: user.designationId,
+        name: user.designationName,
+      },
+      roles: user.roles,
+    };
+
+    return data as User;
   }
 }
 

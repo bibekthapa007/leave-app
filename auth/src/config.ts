@@ -37,9 +37,15 @@ const config = {
       algorithm: 'HS256',
     },
   },
-  cookieSession: {
-    signed: false,
-    secure: process.env.NODE_ENV !== 'test',
+  cookie: {
+    options: {
+      domain: process.env.COOKIE_DOMAIN,
+      path: '/',
+      httpOnly: false,
+      secure: true,
+      sameSite: 'none',
+      expires: new Date(Date.now() + parseInt(process.env.COOKIE_DURATION)),
+    },
   },
 } as const;
 
