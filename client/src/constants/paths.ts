@@ -5,4 +5,5 @@ export default {
   products: 'products',
   leave: 'leave',
   apply: 'apply',
+  profile: 'profile',
 } as const;
