@@ -15,7 +15,7 @@ interface TUserState {
 
 interface TUserStore extends TUserState {
   updateUser: (user: User) => void;
-  fetchUser: (user: User) => void;
+  fetchUser: () => void;
   removeUser: () => void;
 }
 
@@ -34,11 +34,11 @@ const useUserStore = create<TUserStore>()(set => ({
     try {
       const data = await getCurrentUser();
 
-      set({ ...initialState, success: true, data });
+      set({ ...initialState, success: true, loading: false, data });
     } catch (error: Any) {
       console.error('Error in data fetch:', error);
 
-      set({ ...initialState, error: true, errorData: error?.message });
+      set({ ...initialState, error: true, loading: false, errorData: error?.message });
     }
   },
 

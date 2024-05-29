@@ -9,7 +9,7 @@ function Link({
   children,
   to,
   as,
-  passHref,
+  passhref,
   replace,
   scroll,
   shallow,
@@ -26,7 +26,7 @@ function Link({
     <RouterLink
       to={to}
       as={as}
-      passHref={passHref}
+      passhref={passhref}
       replace={replace}
       scroll={scroll}
       shallow={shallow}

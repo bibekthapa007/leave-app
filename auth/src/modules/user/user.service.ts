@@ -80,7 +80,9 @@ export const signIn = async (body: { email: string; password: string }): Promise
     throw new BadRequestError('Email or password does not match.');
   }
 
-  return await UserModel.fetchUserDetails({ email: body.email });
+  const [user] = await UserModel.fetchUserDetails({ email: body.email });
+
+  return user;
 };
 
 /**

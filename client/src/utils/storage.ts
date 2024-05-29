@@ -1,14 +1,10 @@
-import Cookies from 'universal-cookie';
-
-const cookies = new Cookies();
-
 /**
  * Get cookie.
  *
  * @param {String} key : whose value to get.
  */
 export function get(key: string) {
-  return cookies.get(key);
+  return localStorage.getItem(key);
 }
 
 /**
@@ -17,8 +13,8 @@ export function get(key: string) {
  * @param {String} key : whose Value to set.
  * @param {*} value : Value to set.
  */
-export function set(key: string, value: string | number) {
-  cookies.set(key, value);
+export function set(key: string, value: string) {
+  localStorage.setItem(key, value);
 }
 
 /**
@@ -27,5 +23,5 @@ export function set(key: string, value: string | number) {
  * @param {string} key
  */
 export function remove(key: string) {
-  cookies.remove(key);
+  localStorage.setItem(key, '');
 }

@@ -4,10 +4,13 @@ import { useHistory } from 'react-router-dom';
 
 import { signUp } from 'services/auth';
 
+import useUserStore from 'stores/useUserStore';
+
 import InputField from 'components/InputField';
 import Alert from 'components/Alert';
 
 import { parseError } from 'utils/handleError';
+import { handleLogin } from 'utils/handleAuth';
 
 import { Any, CustomError } from 'types/common';
 
@@ -15,6 +18,7 @@ import paths from 'constants/paths';
 
 export default function SignUp() {
   const history = useHistory();
+  const { updateUser } = useUserStore();
 
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -23,11 +27,14 @@ export default function SignUp() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
+    const body = Object.fromEntries(formData.entries());
 
     try {
       setIsSubmitting(true);
-      await signUp(data as Any);
+      const data = await signUp(body as Any);
+
+      handleLogin(data.tokens);
+      updateUser(data.user);
 
       history.push(paths.home);
     } catch (error) {

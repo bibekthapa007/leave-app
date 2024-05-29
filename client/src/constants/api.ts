@@ -1,17 +1,17 @@
-const isClient = () => typeof window !== 'undefined';
+import config from 'config/config';
 
 const api = {
-  baseUrl: isClient()
-    ? 'https://ticketing-local.dev'
-    : 'https://ingress-nginx-controller.ingress-nginx.svc.cluster.local',
+  baseUrl: config.apiBaseURI as string,
   auth: {
-    signUp: '/api/auth/users/signup',
-    signIn: '/api/auth/users/signin',
-    currentUser: '/api/auth/users/currentuser',
+    basePath: '/auth',
+    signUp: '/auth/users/signup',
+    signIn: '/auth/users/signin',
+    currentUser: `/auth/users/currentuser`,
+    logout: `/auth/users/logout`,
   },
   leave: {
-    leave: '/api/leave',
-    updateLeave: '/api/leave/:id',
+    leave: '/leave',
+    updateLeave: '/leave/:id',
   },
 };
 

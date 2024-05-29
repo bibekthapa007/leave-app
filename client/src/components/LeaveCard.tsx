@@ -23,7 +23,7 @@ function LeaveCard(props: LeaveCardProps) {
   const [isMandatory, setMandatory] = useState(false);
   return (
     <Link
-      passHref
+      passhref
       to={routes.applyleave}
       borderBottom="1px solid"
       borderColor="gray.200"

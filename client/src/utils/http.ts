@@ -7,6 +7,7 @@ import config from 'config/config';
 
 import { logout } from 'services/auth';
 import { getAccessToken } from './token';
+import { handleLogout } from './handleAuth';
 
 const http = axios.create({
   baseURL: config.apiBaseURI,
@@ -28,9 +29,8 @@ export async function unauthorizedResponseHandlerInterceptor(err: any) {
     return Promise.reject(err);
   }
 
-  console.log(errorCode);
-
-  logout();
+  handleLogout();
+  return;
 }
 
 http.interceptors.request.use(function (config) {

@@ -49,9 +49,8 @@ export function App() {
       ],
     };
 
-    updateUser(fakeUser);
-    // removeUser();
-  }, [updateUser]);
+    fetchUser();
+  }, [fetchUser]);
 
   if (loading) {
     return <div>Loading...</div>;

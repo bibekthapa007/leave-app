@@ -5,17 +5,13 @@ import http from 'utils/http';
 import api from 'constants/api';
 
 export const signUp = async (data: { email: string; name: string; password: string }) => {
-  const response = await http.post(api.auth.signUp, data, {
-    withCredentials: false,
-  });
+  const response = await http.post(api.auth.signUp, data);
 
   return response.data;
 };
 
 export const signIn = async (data: { email: string; password: string }) => {
-  const response = await http.post(api.auth.signIn, data, {
-    withCredentials: false,
-  });
+  const response = await http.post(api.auth.signIn, data);
 
   return response.data;
 };
@@ -27,7 +23,7 @@ export const getCurrentUser = async () => {
 };
 
 export const logout = async () => {
-  const response = await http.get(buildUrl(api.baseUrl, api.auth.currentUser));
+  const response = await http.get(buildUrl(api.baseUrl, api.auth.logout));
 
-  return response.data;
+  return response?.data;
 };

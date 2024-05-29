@@ -30,8 +30,6 @@ function ProtectedRoute(props: ProtectedRouteProps) {
     );
 
   if (!isAuthorized) {
-    console.log('Unauthorized access');
-
     return <Redirect to={paths.signin} />;
   }
 
