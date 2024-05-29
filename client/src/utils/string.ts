@@ -1,3 +1,5 @@
+import { Any } from 'types/common';
+
 /**
  * Build a Url removing multiple slashes and trailing slash.
  *
@@ -19,3 +21,14 @@ export function buildUrl(...routes: Array<string | URL | number>): string {
     .replace(/(https?:\/\/|^\/\/)|(\/)+/g, '$1$2') // remove double slashes
     .replace(/\/+$/, ''); // remove trailing slash
 }
+
+/**
+ * Join string
+ * @param {String} string
+ * @returns {String}
+ * @example joinStrings('Hello','world',3,10)
+ * @return 'Helloworld310'
+ */
+export const joinStrings = (...strings: Any[]) => {
+  return strings.join('');
+};
