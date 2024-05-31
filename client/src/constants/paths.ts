@@ -6,4 +6,6 @@ export default {
   leave: 'leave',
   apply: 'apply',
   profile: 'profile',
+  employee: 'employee',
+  balance: 'balance',
 } as const;

@@ -1,6 +1,7 @@
 import { Button, IconButton } from '@chakra-ui/button';
-import { Box, Container, Flex, Heading } from '@chakra-ui/layout';
+import { Box, Container, Flex, Heading, Spacer } from '@chakra-ui/layout';
 import { AiOutlineMenu } from 'react-icons/ai';
+import { FaUserCircle } from 'react-icons/fa';
 
 import useUserStore from 'stores/useUserStore';
 
@@ -52,15 +53,27 @@ function Navbar({ onOpen }: NavbarProps) {
               <ColorModeSwitcher justifySelf="flex-end" />
             </Box>
           </Flex>
-          <Flex align="center" flexGrow="0">
+          <Flex align="center">
             <Flex display={['none', 'none', 'block']}>
+              <Link to={createRoute([paths.employee])} ml={4}>
+                Employee
+              </Link>
               <Link to={createRoute([paths.leave])} ml={4}>
                 Leave
+              </Link>
+              <Link to={createRoute([paths.leave, paths.balance])} ml={4}>
+                Leave Balance
               </Link>
               <Link to={createRoute([paths.leave, paths.apply])} ml={4}>
                 Apply Leave
               </Link>
             </Flex>
+            <Spacer />
+            <Link to={createRoute([paths.profile])}>
+              <Box margin="0 1rem">
+                <FaUserCircle fontSize="1.5em" color="gray.100" />
+              </Box>
+            </Link>
           </Flex>
         </Flex>
       </Container>
