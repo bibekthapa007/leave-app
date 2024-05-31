@@ -1,12 +1,28 @@
 import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.createTable('user_roles', table => {
+  await knex.schema.createTable('leave_requests', table => {
     table.bigIncrements('id').primary().unsigned();
-    table.specificType('user_id', 'bigint(19)').unsigned().references('id').inTable('users');
-    table.specificType('role_id', 'bigint(19)').unsigned().references('id').inTable('roles');
 
-    table.unique(['user_id', 'role_id']);
+    table
+      .specificType('leave_type_id', 'bigint(19)')
+      .unsigned()
+      .references('id')
+      .inTable('leave_types');
+
+    table.specificType('user_id', 'bigint(19)').unsigned().references('id').inTable('users');
+
+    table.specificType('manager_id', 'bigint(19)').unsigned().references('id').inTable('users');
+
+    table.timestamp('start_date').notNullable();
+
+    table.timestamp('end_date').notNullable();
+
+    table.enu('status', ['pending', 'approved', 'rejected']).notNullable();
+
+    table.integer('leave_days').notNullable();
+
+    table.string('reason').notNullable();
 
     table.timestamp('created_at').defaultTo(knex.fn.now());
 
@@ -15,7 +31,7 @@ export async function up(knex: Knex): Promise<void> {
       .unsigned()
       .references('id')
       .inTable('users')
-      .nullable();
+      .notNullable();
 
     table.timestamp('updated_at');
 
@@ -25,18 +41,9 @@ export async function up(knex: Knex): Promise<void> {
       .references('id')
       .inTable('users')
       .nullable();
-
-    table.timestamp('deleted_at').nullable();
-
-    table
-      .specificType('deleted_by', 'bigint(19)')
-      .references('id')
-      .inTable('users')
-      .unsigned()
-      .nullable();
   });
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.schema.dropTable('user_roles');
+  await knex.schema.dropTable('leave_requests');
 }
