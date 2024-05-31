@@ -10,7 +10,7 @@ import { User } from '@/types/user';
 
 const authenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
-  const accessToken = authHeader.startsWith('Bearer ') && authHeader.split(' ')[1];
+  const accessToken = authHeader && authHeader.startsWith('Bearer ') && authHeader.split(' ')[1];
 
   if (!accessToken) {
     addToStore({ currentUser: null });

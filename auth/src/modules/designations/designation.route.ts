@@ -7,6 +7,6 @@ import * as designationController from './designation.controller';
 const router = Router();
 
 // TODO: use requireAuth for other route expecct this
-router.get('/', designationController.getDesignations);
+router.get('/', designationController.fetchDesignations);
 
 export default router;

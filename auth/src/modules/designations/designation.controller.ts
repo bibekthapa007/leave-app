@@ -10,8 +10,8 @@ import * as designationService from './designation.service';
  * @param {Response} res
  * @returns {Promise<Response>}
  */
-export const getDesignations = async (req: Request, res: Response) => {
-  const designations = await designationService.getDesignations({});
+export const fetchDesignations = async (req: Request, res: Response) => {
+  const designations = await designationService.fetchDesignations({});
 
   return res.status(HttpStatus.OK).json({ data: designations });
 };

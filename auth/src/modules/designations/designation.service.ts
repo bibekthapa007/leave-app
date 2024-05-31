@@ -13,7 +13,7 @@ const log = logger.withNamespace('modules/degisnations.service');
  *
  * @returns A promise that resolves to an array of Designations objects.
  */
-export const getDesignations = async (
+export const fetchDesignations = async (
   params: Any,
   trx?: Knex.Transaction
 ): Promise<Designation[]> => {

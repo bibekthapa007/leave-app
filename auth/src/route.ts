@@ -4,6 +4,7 @@ import swaggerRoute from '@/modules/swagger/swagger.route';
 import usersRoute from '@/modules/user/user.route';
 import rolesRoute from '@/modules/roles/role.route';
 import designationsRoute from '@/modules/designations/designation.route';
+import leaveTypesRoute from '@/modules/leaveTypes/leaveType.route';
 
 import { addToStore } from '@/services/store';
 
@@ -41,6 +42,7 @@ router.use(authMiddleware);
 router.use('/users', usersRoute);
 router.use('/roles', rolesRoute);
 router.use('/designations', designationsRoute);
+router.use('/leave-types', leaveTypesRoute);
 
 router.use(requireAuth);
 router.use('/api-docs', swaggerRoute);
