@@ -3,8 +3,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Box, Container, Text, Flex, Icon, Button } from '@chakra-ui/react';
 import { MdTrendingUp, MdEventAvailable, MdPerson, MdHourglassEmpty } from 'react-icons/md';
 
+import LeaveTable from 'pages/leave/LeaveTable';
+
 import DashboardLayout from 'components/DashboardLayout';
-import Table from 'components/table/Table';
 
 interface LeaveData {
   id: number;
@@ -144,23 +145,15 @@ function Dashboard() {
           </Flex>
         </Flex>
 
-        <Text fontSize="2xl" fontWeight="bold" color="gray.10">
+        <Text fontWeight="bold" color="gray.10">
           Leave
         </Text>
 
-        <Box bgColor="white">
-          <Table<LeaveData>
-            columns={leaveColumns}
-            data={leaveData}
-            className="overflow-auto"
-            loading={false}
-            classes={{
-              tableHeaderRow: 'px-12 py-2x',
-              tableBodyRow: () => 'px-12 border-line-bottom',
-            }}
-            emptyMessage="No allocation Offboard data."
-          />
-        </Box>
+        <LeaveTable<LeaveData>
+          columns={leaveColumns}
+          data={leaveData}
+          emptyMessage="No allocation Offboard data."
+        />
       </Container>
     </DashboardLayout>
   );
