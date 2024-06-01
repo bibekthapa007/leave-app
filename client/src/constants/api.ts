@@ -8,6 +8,8 @@ const api = {
     signIn: '/auth/users/signin',
     currentUser: `/auth/users/currentuser`,
     logout: `/auth/users/logout`,
+    designations: '/auth/designations',
+    roles: '/auth/roles',
   },
   leave: {
     leave: '/leave',

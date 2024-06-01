@@ -8,4 +8,5 @@ export default {
   profile: 'profile',
   employee: 'employee',
   balance: 'balance',
+  designation: 'designation',
 } as const;

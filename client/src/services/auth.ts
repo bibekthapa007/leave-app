@@ -2,9 +2,11 @@ import { buildUrl } from 'utils/string';
 // eslint-disable-next-line import/no-cycle
 import http from 'utils/http';
 
+import { Any } from 'types/common';
+
 import api from 'constants/api';
 
-export const signUp = async (data: { email: string; name: string; password: string }) => {
+export const signUp = async (data: Partial<Any>) => {
   const response = await http.post(api.auth.signUp, data);
 
   return response.data;

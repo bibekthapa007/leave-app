@@ -4,6 +4,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 
 import SignIn from 'pages/signin/SignIn';
+import SignUp from 'pages/signup/SignUp';
 
 import useUserStore from 'stores/useUserStore';
 
@@ -61,6 +62,8 @@ export function App() {
       <ChakraProvider theme={theme}>
         <BrowserRouter>
           <Route exact path={createRoute([paths.signin])} component={SignIn} />
+
+          <Route exact path={createRoute([paths.signup])} component={SignUp} />
 
           <AuthRoute path={paths.home}>
             <Route path={createRoute([])} component={Home} />

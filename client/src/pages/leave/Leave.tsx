@@ -7,7 +7,7 @@ import DashboardLayout from 'components/DashboardLayout';
 import { Any } from 'types/common';
 
 import LeaveList from './LeaveList';
-import { useLeaveQuery } from './useLeaveQuery';
+import { useLeaveQuery } from '../../hooks/useLeaveQuery';
 import LeaveTable from './LeaveTable';
 
 interface LeaveData {
