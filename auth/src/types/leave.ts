@@ -1,22 +1,38 @@
 export interface LeaveType {
   id: number;
   name: string;
-  default_days: number;
-  is_transferable: boolean;
-  created_at: Date;
-  created_by: number;
-  updated_at: Date;
-  updated_by: number;
+  defaultDays: number;
+  isTransferable: boolean;
+  createtAt: Date;
+  createdBy: number;
+  updatedAt: Date;
+  updatedBy: number;
 }
 
 export interface LeaveCredit {
   id: number;
-  leave_type_id: number;
-  user_id: number;
-  default_days: number;
-  max_days: number;
-  created_at: Date;
-  created_by: number;
-  updated_at: Date;
-  updated_by: number;
+  leaveTypeId: number;
+  userId: number;
+  defaultDays: number;
+  maxDays: number;
+  createdAt: Date;
+  createdBy: number;
+  updatedAt: Date;
+  updatedBy: number;
+}
+
+export interface LeaveRequest {
+  id: number;
+  leaveTypeId: number;
+  userId: number;
+  managerId: number;
+  startDate: Date;
+  endDate: Date;
+  status: string;
+  leaveDays: number;
+  reason: string;
+  createdAt: Date;
+  createdBy: number;
+  updatedAt: Date;
+  updatedBy: number;
 }
