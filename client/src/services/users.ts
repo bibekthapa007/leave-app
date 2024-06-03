@@ -1,13 +1,15 @@
 import { buildUrl } from 'utils/string';
 import http from 'utils/http';
 
-import { Any, Designation } from 'types/common';
+import { Any, User } from 'types/common';
 
 import api from 'constants/api';
 
-export async function fetchRoles(params: Any, signal?: AbortSignal): Promise<Designation[]> {
-  const url = buildUrl(api.auth.roles);
+export async function fetchUsers(params: Any, signal?: AbortSignal): Promise<User[]> {
+  const url = buildUrl(api.auth.users);
 
   const { data } = await http.get(url, { signal, params });
+
+  console.log(data);
   return data;
 }

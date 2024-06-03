@@ -10,6 +10,7 @@ const api = {
     logout: `/auth/users/logout`,
     designations: '/auth/designations',
     roles: '/auth/roles',
+    users: '/auth/users',
   },
   leave: {
     leave: '/leave',

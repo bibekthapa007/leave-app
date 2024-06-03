@@ -9,4 +9,6 @@ export default {
   employee: 'employee',
   balance: 'balance',
   designation: 'designation',
+  role: 'role',
+  user: 'user',
 } as const;

@@ -9,6 +9,8 @@ export default {
   leave: createRoute([paths.leave]),
   applyleave: createRoute([paths.leave, paths.apply]),
   profile: createRoute([paths.profile]),
+  employee: createRoute([paths.employee]),
+  leavebalance: createRoute([paths.leave, paths.balance]),
   editLeave(id: number) {
     createRoute([paths.leave, id.toString()]);
   },

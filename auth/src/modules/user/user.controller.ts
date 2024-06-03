@@ -13,10 +13,23 @@ import * as userService from './user.service';
  * @param {Response} res
  * @returns {Promise<Response>}
  */
-export const getUsers = async (req: Request, res: Response) => {
-  const users = await userService.getUsers({});
+export const fetchUsers = async (req: Request, res: Response) => {
+  const users = await userService.fetchUsers({});
 
-  return res.status(HttpStatus.OK).json(users);
+  return res.status(HttpStatus.OK).json({ data: users });
+};
+
+/**
+ * Get all users.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Promise<Response>}
+ */
+export const fetchUserById = async (req: Request, res: Response) => {
+  const users = await userService.fetchUserById(+req.params.id as number);
+
+  return res.status(HttpStatus.OK).json({ data: users });
 };
 
 /**

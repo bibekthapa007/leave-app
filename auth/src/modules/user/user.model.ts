@@ -120,6 +120,7 @@ class UserModel extends BaseModel {
   }
 
   static mapToModel(user: Any): User {
+    console.log(user);
     const data = user.id && {
       id: user.id,
       name: user.name,

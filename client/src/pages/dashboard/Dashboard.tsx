@@ -22,7 +22,7 @@ interface LeaveTableActionsProps {
 }
 
 const boxStyle = {
-  width: '550px',
+  width: '35vw',
   borderWidth: '1px',
   borderRadius: 'lg',
   overflow: 'hidden',

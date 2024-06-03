@@ -16,6 +16,11 @@ export interface Designation {
   name: string;
 }
 
+export interface User {
+  id: number;
+  name: string;
+}
+
 export interface DefaultObject {
   [key: string]: Any;
 }

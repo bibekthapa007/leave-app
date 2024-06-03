@@ -39,9 +39,9 @@ function Profile() {
 
   return (
     <DashboardLayout bgColor="gray.80">
-      <Container maxW="6xl" mt={5}>
+      <Container maxW="6xl">
         <Flex direction="column" alignItems="flex-start" mx={5}>
-          <Text as="h1" fontWeight="bold" mb={5}>
+          <Text as="h1" fontWeight="bold" mb={5} mt={5}>
             Profile
           </Text>
           <Container bgColor="white" p={10} borderRadius="md" boxShadow="md" maxW="6xl" w="full">

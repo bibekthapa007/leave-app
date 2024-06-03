@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
-import { Link } from '@chakra-ui/react';
 import { useHistory } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  Stack,
+  Text,
+  Link,
+  useToast,
+} from '@chakra-ui/react';
 
 import { signUp } from 'services/auth';
 
 import useUserStore from 'stores/useUserStore';
 
-import InputField from 'components/InputField';
 import Alert from 'components/Alert';
 
 import { useDesignationsQuery } from 'hooks/useDesignationsQuery';
@@ -22,10 +32,8 @@ export default function SignUp() {
   const history = useHistory();
   const { updateUser } = useUserStore();
   const designationsQuery = useDesignationsQuery({});
-
   const { isLoading, isSuccess, data: designations = [] } = designationsQuery;
-
-  console.log(isLoading, 'djj', designations);
+  const toast = useToast();
 
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -35,13 +43,10 @@ export default function SignUp() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const body = Object.fromEntries(formData.entries());
+    const body: Any = Object.fromEntries(formData.entries());
 
-    // Add the designation ID to the body if it exists
-    const designationId = formData.get('designation');
-    if (designationId !== null) {
-      body.designation_id = String(designationId);
-    }
+    // Log the body to the console
+    console.log('Form Body:', body);
 
     try {
       setIsSubmitting(true);
@@ -54,6 +59,13 @@ export default function SignUp() {
     } catch (error) {
       const errors = parseError(error);
       setErrors(errors as CustomError[]);
+      toast({
+        title: 'An error occurred.',
+        description: 'Unable to sign up.',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -64,92 +76,95 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+    <Box minH="100vh" py={12} px={6} display="flex" flexDirection="column" justifyContent="center">
+      <Box mx="auto" w="full" maxW="sm">
+        <Text mt={10} textAlign="center" fontSize="2xl" fontWeight="bold" color="gray.900">
           Sign up to your account
-        </h2>
-      </div>
+        </Text>
+      </Box>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <InputField type="text" label="Full name" name="name" required />
+      <Box mt={10} mx="auto" w="full" maxW="sm">
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={6}>
+            <FormControl isRequired>
+              <FormLabel>Full name</FormLabel>
+              <Input type="text" name="name" />
+            </FormControl>
 
-          <InputField type="email" label="Email" name="email" required />
+            <FormControl isRequired>
+              <FormLabel>Email</FormLabel>
+              <Input type="email" name="email" />
+            </FormControl>
 
-          <InputField type="password" label="Password" name="password" required />
+            <FormControl isRequired>
+              <FormLabel>Password</FormLabel>
+              <Input type="password" name="password" />
+            </FormControl>
 
-          <InputField type="text" label="Department" name="department" required />
+            <FormControl isRequired>
+              <FormLabel>Department</FormLabel>
+              <Input type="text" name="department" />
+            </FormControl>
 
-          <div>
-            <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-              Designation
-            </label>
-            <select
-              id="designation"
-              name="designation"
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-            >
-              {designations.map(option => (
-                <option key={option.id} value={option.id}>
-                  {option.name}
-                </option>
-              ))}
-            </select>
-          </div>
+            <FormControl>
+              <FormLabel>Designation</FormLabel>
+              <Select name="designation">
+                {designations.map(option => (
+                  <option key={option.id} value={option.name}>
+                    {option.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
 
-          <InputField
-            type="number"
-            label="Number"
-            name="phone"
-            pattern="[0-9]{10}"
-            title="Please enter a 10-digit number"
-            required
-          />
+            <FormControl isRequired>
+              <FormLabel>Number</FormLabel>
+              <Input
+                type="number"
+                name="phone"
+                pattern="[0-9]{10}"
+                title="Please enter a 10-digit number"
+              />
+            </FormControl>
 
-          {/* Dropdown for selecting country */}
-          <div>
-            <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-              Country
-            </label>
-            <select
-              id="country"
-              name="country"
-              onChange={handleCountryChange}
-              value={country}
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-            >
-              <option value="">Select a country</option>
-              <option value="NEPAL">Nepal</option>
-              <option value="USA">United States</option>
-              <option value="UK">United Kingdom</option>
-              {/* Add more options as needed */}
-            </select>
-          </div>
+            <FormControl>
+              <FormLabel>Country</FormLabel>
+              <Select name="country" value={country} onChange={handleCountryChange}>
+                <option value="">Select a country</option>
+                <option value="NEPAL">Nepal</option>
+                <option value="USA">United States</option>
+                <option value="UK">United Kingdom</option>
+                {/* Add more options as needed */}
+              </Select>
+            </FormControl>
 
-          <Alert errors={errors} />
+            <Alert errors={errors} />
 
-          <div>
-            <button
-              disabled={isSubmitting}
+            <Button
+              isLoading={isSubmitting}
               type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              bg="#4f46e5"
+              _hover={{ bg: '#6366f1' }}
+              color="white"
+              width="full"
             >
               {!isSubmitting ? 'Sign Up' : 'Submitting'}
-            </button>
-          </div>
+            </Button>
+          </Stack>
         </form>
 
-        <p className="mt-10 text-center text-sm text-gray-500">
-          Already a member?
+        <Text mt={10} textAlign="center" fontSize="sm" color="gray.500">
+          Already a member?{' '}
           <Link
             href={paths.signin}
-            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            color="indigo.600"
+            fontWeight="semibold"
+            _hover={{ color: 'indigo.500' }}
           >
             Sign In
           </Link>
-        </p>
-      </div>
-    </div>
+        </Text>
+      </Box>
+    </Box>
   );
 }

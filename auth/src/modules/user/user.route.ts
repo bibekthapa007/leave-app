@@ -10,7 +10,9 @@ import * as userValidator from './user.validator';
 const router = Router();
 
 // TODO: use requireAuth
-router.get('/', userController.getUsers);
+router.get('/', userController.fetchUsers);
+
+router.get('/:id', userController.fetchUserById);
 
 router.get('/currentuser', userController.fetchCurrentUser);
 

@@ -8,7 +8,7 @@ import paths from 'constants/paths';
 
 export const useRolesQuery = (params?: DefaultObject) => {
   const rolesQuery = useQuery({
-    queryKey: [paths.designation],
+    queryKey: [paths.role],
     queryFn: ({ signal }: Any) => fetchRoles(params, signal),
     enabled: !!params,
   });

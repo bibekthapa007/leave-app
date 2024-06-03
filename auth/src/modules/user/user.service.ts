@@ -25,7 +25,7 @@ const log = logger.withNamespace('modules/user.service');
  *
  * @returns A promise that resolves to an array of User objects.
  */
-export const getUsers = async (params: Any, trx?: Knex.Transaction): Promise<User[]> => {
+export const fetchUsers = async (params: Any, trx?: Knex.Transaction): Promise<User[]> => {
   log.info('Fetching users');
 
   const users = await UserModel.fetchUserDetails({}, trx);
@@ -33,6 +33,18 @@ export const getUsers = async (params: Any, trx?: Knex.Transaction): Promise<Use
   return users;
 };
 
+/**
+ * Fetch list of users.
+ *
+ * @returns A promise that resolves to an array of User objects.
+ */
+export const fetchUserById = async (id: number, trx?: Knex.Transaction): Promise<User[]> => {
+  log.info('Fetching users');
+
+  const users = await UserModel.fetchById(id, trx);
+
+  return users;
+};
 /**
  * Fetch current user.
  *

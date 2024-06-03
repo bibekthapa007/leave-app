@@ -44,7 +44,7 @@ function AppyLeave() {
   return (
     <DashboardLayout bgColor="gray.80">
       <Container maxW="6xl" px={4}>
-        <Text as="h1" fontWeight="bold" mb={6}>
+        <Text as="h1" fontWeight="bold" mb={5}>
           Apply Leave
         </Text>
         <Box bgColor="white" padding={8} boxShadow="md" borderRadius="md">
