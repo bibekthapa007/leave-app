@@ -18,6 +18,8 @@ import {
 
 import DashboardLayout from 'components/DashboardLayout';
 
+import { useLeaveTypesQuery } from 'hooks/useLeaveTypesQuery';
+
 interface FormValues {
   startDate: string;
   endDate: string;
@@ -41,6 +43,14 @@ function AppyLeave() {
     // You can handle form submission logic here
   };
 
+  const leaveTypesQuery = useLeaveTypesQuery({});
+
+  const {
+    isLoading: isLoadingLeaveTypes,
+    isSuccess: isSuccessLeaveTypes,
+    data: leaveTypes = [],
+  } = leaveTypesQuery;
+
   return (
     <DashboardLayout bgColor="gray.80">
       <Container maxW="6xl" px={4}>
@@ -59,9 +69,11 @@ function AppyLeave() {
                   rules={{ required: 'Leave type is required' }}
                   render={({ field }) => (
                     <Select {...field} placeholder="Select leave type">
-                      <option value="annual">Annual Leave</option>
-                      <option value="sick">Sick Leave</option>
-                      <option value="maternity">Maternity Leave</option>
+                      {leaveTypes.map(option => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
                     </Select>
                   )}
                 />

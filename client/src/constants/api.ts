@@ -11,6 +11,9 @@ const api = {
     designations: '/auth/designations',
     roles: '/auth/roles',
     users: '/auth/users',
+    countries: '/auth/countries',
+    leaveTypes: '/auth/leave-types',
+    leaves: '/auth/leaves',
   },
   leave: {
     leave: '/leave',

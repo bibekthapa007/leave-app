@@ -4,4 +4,7 @@ export default {
   designations: 'designations',
   roles: 'roles',
   users: 'users',
+  countries: 'countries',
+  leaveTypes: 'leave-types',
+  leaveCredits: 'leave-credits',
 } as const;

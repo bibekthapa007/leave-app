@@ -10,6 +10,5 @@ export async function fetchUsers(params: Any, signal?: AbortSignal): Promise<Use
 
   const { data } = await http.get(url, { signal, params });
 
-  console.log(data);
   return data;
 }

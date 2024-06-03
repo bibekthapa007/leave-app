@@ -21,6 +21,16 @@ export interface User {
   name: string;
 }
 
+export interface Country {
+  id: number;
+  name: string;
+}
+
+export interface LeaveType {
+  id: number;
+  name: string;
+}
+
 export interface DefaultObject {
   [key: string]: Any;
 }

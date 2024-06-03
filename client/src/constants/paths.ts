@@ -11,4 +11,6 @@ export default {
   designation: 'designation',
   role: 'role',
   user: 'user',
+  countries: 'countries',
+  leaveTypes: 'leave-types',
 } as const;

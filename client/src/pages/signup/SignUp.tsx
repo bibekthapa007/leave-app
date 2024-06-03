@@ -20,6 +20,7 @@ import useUserStore from 'stores/useUserStore';
 import Alert from 'components/Alert';
 
 import { useDesignationsQuery } from 'hooks/useDesignationsQuery';
+import { useCountriesQuery } from 'hooks/useCountriesQuery';
 
 import { parseError } from 'utils/handleError';
 import { handleLogin } from 'utils/handleAuth';
@@ -32,7 +33,17 @@ export default function SignUp() {
   const history = useHistory();
   const { updateUser } = useUserStore();
   const designationsQuery = useDesignationsQuery({});
-  const { isLoading, isSuccess, data: designations = [] } = designationsQuery;
+  const {
+    isLoading: isLoadingDesignations,
+    isSuccess: isSuccessDesignations,
+    data: designations = [],
+  } = designationsQuery;
+  const countriesQuery = useCountriesQuery({});
+  const {
+    isLoading: isLoadingCountries,
+    isSuccess: isSuccessCountries,
+    data: countries = [],
+  } = countriesQuery;
   const toast = useToast();
 
   const [errors, setErrors] = useState<CustomError[]>([]);
@@ -45,12 +56,14 @@ export default function SignUp() {
     const formData = new FormData(e.currentTarget);
     const body: Any = Object.fromEntries(formData.entries());
 
-    // Log the body to the console
-    console.log('Form Body:', body);
+    body.designationId = parseInt(body.designation, 10);
+    body.countryId = parseInt(body.country, 10);
+    delete body.designation;
+    delete body.country;
 
     try {
       setIsSubmitting(true);
-      const data = await signUp(body as Any);
+      const data = await signUp(body);
 
       handleLogin(data.tokens);
       updateUser(data.user);
@@ -110,7 +123,7 @@ export default function SignUp() {
               <FormLabel>Designation</FormLabel>
               <Select name="designation">
                 {designations.map(option => (
-                  <option key={option.id} value={option.name}>
+                  <option key={option.id} value={option.id}>
                     {option.name}
                   </option>
                 ))}
@@ -130,11 +143,11 @@ export default function SignUp() {
             <FormControl>
               <FormLabel>Country</FormLabel>
               <Select name="country" value={country} onChange={handleCountryChange}>
-                <option value="">Select a country</option>
-                <option value="NEPAL">Nepal</option>
-                <option value="USA">United States</option>
-                <option value="UK">United Kingdom</option>
-                {/* Add more options as needed */}
+                {countries.map(option => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
+                  </option>
+                ))}
               </Select>
             </FormControl>
 

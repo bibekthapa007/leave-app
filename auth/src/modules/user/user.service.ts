@@ -17,6 +17,7 @@ import { Any, Role } from '@/types/common';
 import db from '@/db';
 
 import UserModel from './user.model';
+import CountryModel from '../countries/countries.model';
 
 const log = logger.withNamespace('modules/user.service');
 
@@ -119,6 +120,12 @@ export const signUp = async (userBody: { password: string } & Omit<User, 'id'>):
 
     if (!designation) {
       throw new BadRequestError('Invalid designation.');
+    }
+
+    const country = await CountryModel.fetchById(userBody.countryId, trx);
+
+    if (!country) {
+      throw new BadRequestError('Invalid country.');
     }
 
     const roles = await RoleModel.fetch();

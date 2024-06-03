@@ -4,7 +4,6 @@ import { fetchUsers } from 'services/users';
 
 import { Any, DefaultObject } from 'types/common';
 
-import paths from 'constants/paths';
 import queryKey from 'constants/queryKey';
 
 export const useUsersQuery = (params?: DefaultObject) => {

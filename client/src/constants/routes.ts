@@ -11,6 +11,7 @@ export default {
   profile: createRoute([paths.profile]),
   employee: createRoute([paths.employee]),
   leavebalance: createRoute([paths.leave, paths.balance]),
+  leaveTypes: createRoute([paths.leaveTypes]),
   editLeave(id: number) {
     createRoute([paths.leave, id.toString()]);
   },
