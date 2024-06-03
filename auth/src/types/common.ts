@@ -25,3 +25,9 @@ export interface Country {
   id: number;
   name: string;
 }
+
+export interface FiscalYear {
+  id: number;
+  name: string;
+  isCurrent: boolean;
+}

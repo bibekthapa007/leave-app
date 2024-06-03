@@ -8,6 +8,7 @@ import leaveTypesRoute from '@/modules/leaveTypes/leaveType.route';
 import leaveCreditsRoute from '@/modules/leaveCredits/leaveCredit.route';
 import leaveRequestsRoute from '@/modules/leaveRequests/leaveRequest.route';
 import countriesRoute from '@/modules/countries/countries.route';
+import fiscalYearsRoute from '@/modules/fiscalYears/fiscalYears.route';
 
 import { addToStore } from '@/services/store';
 
@@ -39,7 +40,6 @@ router.use((req, _, next) => {
   next();
 });
 
-// TODO: uncommet after auth setup
 router.use(authMiddleware);
 
 router.use('/users', usersRoute);
@@ -49,6 +49,7 @@ router.use('/designations', designationsRoute);
 router.use('/leave-types', leaveTypesRoute);
 router.use('/leave-credits', leaveCreditsRoute);
 router.use('/leave-requests', leaveRequestsRoute);
+router.use('/fiscal-years', fiscalYearsRoute);
 
 router.use(requireAuth);
 router.use('/api-docs', swaggerRoute);
