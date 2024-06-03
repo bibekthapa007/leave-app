@@ -6,8 +6,8 @@ export async function seed(knex: Knex): Promise<void> {
 
   // Inserts seed entries
   await knex('leave_types').insert([
-    { name: 'Annual', default_days: 20, max_days: 15, is_transferable: true, created_by: 4 },
-    { name: 'Sick', default_days: 10, max_days: 10, is_transferable: false, created_by: 4 },
+    { name: 'Annual', default_days: 20, max_days: 15, is_transferable: true, created_by: 1 },
+    { name: 'Sick', default_days: 10, max_days: 10, is_transferable: false, created_by: 1 },
     // Add more leave types as needed
   ]);
 }

@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
 
     table.string('phone', 20).notNullable();
 
-    table.string('country', 50).notNullable();
+    table.integer('country_id').unsigned().references('id').inTable('countries');
 
     table
       .specificType('designation_id', 'bigint(19)')
