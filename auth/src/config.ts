@@ -30,7 +30,7 @@ const config = {
     secret: process.env.JWT_SECRET || 'secret',
     signOptions: {
       algorithm: 'HS256',
-      expiresIn: process.env.JWT_EXPIRESIN || '15m',
+      expiresIn: process.env.JWT_EXPIRESIN || '50m',
     },
     refreshTokenSignOptions: {
       expiresIn: process.env.JWT_REFRESH_EXPIRESIN || '7d',

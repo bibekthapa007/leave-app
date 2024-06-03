@@ -12,9 +12,13 @@ export async function up(knex: Knex): Promise<void> {
 
     table.specificType('user_id', 'bigint(19)').unsigned().references('id').inTable('users');
 
-    table.integer('default_days').notNullable();
+    table.integer('fiscal_year_id').unsigned().references('id').inTable('fiscal_years');
 
-    table.integer('max_days').notNullable();
+    table.integer('leave_days').notNullable();
+
+    table.integer('taken_days').notNullable();
+
+    table.text('reason').notNullable();
 
     table.timestamp('created_at').defaultTo(knex.fn.now());
 

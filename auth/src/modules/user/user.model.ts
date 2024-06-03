@@ -28,16 +28,51 @@ class UserModel extends BaseModel {
    * @param {Knex.Transaction} trx
    * @returns
    */
+  static baseQuery(trx?: Knex.Transaction) {
+    const rolesQuery = this.queryBuilder(trx)
+      .from('user_roles as ur')
+      .leftJoin('roles as r', 'ur.role_id', 'r.id')
+      .select(
+        'ur.user_id',
+        db.raw("JSON_ARRAYAGG(JSON_OBJECT('id', ur.id, 'name', r.name)) as roles")
+      )
+      .groupBy('ur.user_id');
+
+    const query = this.queryBuilder(trx)
+      .select(
+        'u.id as id',
+        'u.name as name',
+        'u.email as email',
+        'c.name as country',
+        'u.department as department',
+        'u.phone as phone',
+        'u.designation_id as designationId',
+        'd.id as designation_id',
+        'd.name as designation_name',
+        'roles.roles as roles',
+        'm.id as manager_id',
+        'm.name as manager_name'
+      )
+      .from('users as u')
+      .leftJoin(rolesQuery.as('roles'), 'u.id', 'roles.user_id')
+      .leftJoin('designations as d', 'u.designation_id', 'd.id')
+      .leftJoin('countries as c', 'u.country_id', 'c.id')
+      .leftJoin('users as m', 'u.manager_id', 'm.id');
+
+    return query;
+  }
+
+  /**
+   * Fetch users.
+   *
+   * @param {id} number
+   * @param {Knex.Transaction} trx
+   * @returns
+   */
   static fetch(filter?: { id?: number; email?: string }, trx?: Knex.Transaction) {
     const query = this.queryBuilder(trx).select('*').from('users as u');
 
-    if (filter?.id) {
-      query.where('u.id', filter.id);
-    }
-
-    if (filter?.email) {
-      query.where('u.email', filter.email);
-    }
+    this.injectFilter(query, filter);
 
     return query;
   }
@@ -60,37 +95,12 @@ class UserModel extends BaseModel {
     return query;
   }
 
-  static fetchUserDetails(filters: UserFilters, trx?: Knex.Transaction): Knex.QueryBuilder {
-    const rolesQuery = this.queryBuilder(trx)
-      .from('user_roles as ur')
-      .leftJoin('roles as r', 'ur.role_id', 'r.id')
-      .select(
-        'ur.user_id',
-        db.raw("JSON_ARRAYAGG(JSON_OBJECT('id', ur.id, 'name', r.name)) as roles")
-      )
-      .groupBy('ur.user_id');
-
-    const query = this.queryBuilder(trx)
-      .select(
-        'u.id as id',
-        'u.name as name',
-        'u.email as email',
-        'c.name as country',
-        'u.department as department',
-        'u.phone as phone',
-        'u.designation_id as designationId',
-        'd.id as designation_id',
-        'd.name as designation_name',
-        'roles.roles as roles'
-      )
-      .from('users as u')
-      .leftJoin(rolesQuery.as('roles'), 'u.id', 'roles.user_id')
-      .leftJoin('designations as d', 'u.designation_id', 'd.id')
-      .leftJoin('countries as c', 'u.country_id', 'c.id');
+  static fetchUserDetails(filters: UserFilters, trx?: Knex.Transaction): Promise<User[]> {
+    const query = this.baseQuery(trx);
 
     this.injectFilter(query, filters);
 
-    return query;
+    return query.then(res => res.map(this.mapToModel));
   }
 
   /**
@@ -101,7 +111,11 @@ class UserModel extends BaseModel {
    * @returns
    */
   static fetchById(id: number, trx?: Knex.Transaction) {
-    return this.fetchUserDetails({ id }, trx).first();
+    const query = this.baseQuery(trx);
+
+    this.injectFilter(query, { id });
+
+    return query.first().then(this.mapToModel);
   }
 
   static update(userId: number, updatedData: Partial<UserBody>, trx?: Knex.Transaction) {
@@ -120,7 +134,6 @@ class UserModel extends BaseModel {
   }
 
   static mapToModel(user: Any): User {
-    console.log(user);
     const data = user.id && {
       id: user.id,
       name: user.name,
@@ -132,6 +145,10 @@ class UserModel extends BaseModel {
       designation: user.designationId && {
         id: user.designationId,
         name: user.designationName,
+      },
+      manager: user.managerId && {
+        id: user.managerId,
+        name: user.managerName,
       },
       roles: user.roles,
     };

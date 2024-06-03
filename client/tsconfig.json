@@ -20,6 +20,6 @@
     "jsx": "react-jsx",
     "types": ["node", "@types/jest"]
   },
-  "include": ["src/**/*.(ts,tsx)", "**/*.ts", "**/*.tsx", "test/**/*.ts"],
+  "include": ["src/**/*.(ts,tsx)", "src/**/**/*.(ts,tsx)", "**/*.ts", "**/*.tsx", "test/**/*.ts"],
   "exclude": ["node_modules", "build"]
 }

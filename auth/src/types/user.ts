@@ -1,5 +1,10 @@
 import { Designation, Role } from './common';
 
+export interface MinimalUser {
+  id: number;
+  name: string;
+  email: string;
+}
 export interface User {
   id: number;
   name: string;
@@ -7,7 +12,8 @@ export interface User {
   country: string;
   department: string;
   designationId?: number;
-  designation: Designation;
+  designation?: Designation;
+  manager?: MinimalUser;
   phone: string;
   roles: Role[];
 }
