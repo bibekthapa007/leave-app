@@ -75,7 +75,7 @@ class UserModel extends BaseModel {
         'u.id as id',
         'u.name as name',
         'u.email as email',
-        'u.country as country',
+        'c.name as country',
         'u.department as department',
         'u.phone as phone',
         'u.designation_id as designationId',
@@ -85,7 +85,8 @@ class UserModel extends BaseModel {
       )
       .from('users as u')
       .leftJoin(rolesQuery.as('roles'), 'u.id', 'roles.user_id')
-      .leftJoin('designations as d', 'u.designation_id', 'd.id');
+      .leftJoin('designations as d', 'u.designation_id', 'd.id')
+      .leftJoin('countries as c', 'u.country_id', 'c.id');
 
     this.injectFilter(query, filters);
 

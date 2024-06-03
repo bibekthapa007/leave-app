@@ -7,6 +7,7 @@ import designationsRoute from '@/modules/designations/designation.route';
 import leaveTypesRoute from '@/modules/leaveTypes/leaveType.route';
 import leaveCreditsRoute from '@/modules/leaveCredits/leaveCredit.route';
 import leaveRequestsRoute from '@/modules/leaveRequests/leaveRequest.route';
+import countriesRoute from '@/modules/countries/countries.route';
 
 import { addToStore } from '@/services/store';
 
@@ -43,6 +44,7 @@ router.use(authMiddleware);
 
 router.use('/users', usersRoute);
 router.use('/roles', rolesRoute);
+router.use('/countries', countriesRoute);
 router.use('/designations', designationsRoute);
 router.use('/leave-types', leaveTypesRoute);
 router.use('/leave-credits', leaveCreditsRoute);

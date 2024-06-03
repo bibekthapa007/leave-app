@@ -20,3 +20,8 @@ export enum RoleTypeEnum {
   USER = 'User',
   Manager = 'Manager',
 }
+
+export interface Country {
+  id: number;
+  name: string;
+}

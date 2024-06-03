@@ -14,7 +14,7 @@ export async function seed(knex: Knex): Promise<void> {
     {
       id: 1,
       name: 'Admin',
-      email: 'admin@example.com',
+      email: 'admin@gamil.com',
       department: 'Operation',
       phone: '123456',
       country_id: 1,
@@ -25,7 +25,7 @@ export async function seed(knex: Knex): Promise<void> {
     {
       id: 2,
       name: 'Manager',
-      email: 'manager@example.com',
+      email: 'manager@gamil.com',
       department: 'Operation',
       phone: '123456',
       country_id: 1,
@@ -36,7 +36,7 @@ export async function seed(knex: Knex): Promise<void> {
     {
       id: 3,
       name: 'User',
-      email: 'user@example.com',
+      email: 'user@gamil.com',
       department: 'Operation',
       phone: '123456',
       country_id: 1,
