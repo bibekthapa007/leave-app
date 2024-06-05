@@ -7,4 +7,6 @@ export default {
   countries: 'countries',
   leaveTypes: 'leave-types',
   leaveCredits: 'leave-credits',
+  fiscalYears: 'fiscal-years',
+  currentUser: 'currentuser',
 } as const;

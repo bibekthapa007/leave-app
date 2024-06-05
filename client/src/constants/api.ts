@@ -13,6 +13,8 @@ const api = {
     users: '/auth/users',
     countries: '/auth/countries',
     leaveTypes: '/auth/leave-types',
+    leaveCredits: '/auth/leave-credits',
+    fiscalYears: '/auth/fiscal-years',
     leaves: '/auth/leaves',
   },
   leave: {

@@ -15,17 +15,17 @@ import {
 
 import DashboardLayout from 'components/DashboardLayout';
 
-import { useRolesQuery } from 'hooks/useRolesQuery'; // Import the correct hook
+import { useRolesQuery } from 'hooks/useRolesQuery';
 import { useDesignationsQuery } from 'hooks/useDesignationsQuery';
+import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery';
 
 function Profile() {
   const designationsQuery = useDesignationsQuery({});
   const rolesQuery = useRolesQuery({});
 
-  const [selectedRoles, setSelectedRoles] = useState<number[]>([]); // Change to number[]
+  const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
 
   const handleRoleChange = (selectedRoleIds: number[]) => {
-    // Change to number[]
     setSelectedRoles(selectedRoleIds);
   };
 
@@ -36,6 +36,20 @@ function Profile() {
   } = designationsQuery;
 
   const { isLoading: isLoadingRoles, isSuccess: isSuccessRoles, data: roles = [] } = rolesQuery;
+
+  const {
+    isLoading: isLoadingCurrentUser,
+    isError: isErrorCurrentUser,
+    data: currentUser,
+  } = useCurrentUserQuery();
+
+  if (isLoadingCurrentUser) {
+    return <div>Loading...</div>;
+  }
+
+  if (isErrorCurrentUser) {
+    return <div>Error loading user data.</div>;
+  }
 
   return (
     <DashboardLayout bgColor="gray.80">
@@ -48,12 +62,12 @@ function Profile() {
             <VStack spacing={6} align="stretch" w="100%">
               <FormControl id="name">
                 <FormLabel>Name</FormLabel>
-                <Input type="text" placeholder="Enter your name" />
+                <Input type="text" value={currentUser?.name || ''} readOnly />
               </FormControl>
 
               <FormControl id="email">
                 <FormLabel>Email</FormLabel>
-                <Input type="email" placeholder="Enter your email" />
+                <Input type="email" value={currentUser?.email || ''} readOnly />
               </FormControl>
 
               <FormControl id="designation">

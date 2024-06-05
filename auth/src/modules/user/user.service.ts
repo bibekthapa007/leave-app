@@ -39,12 +39,12 @@ export const fetchUsers = async (params: Any, trx?: Knex.Transaction): Promise<U
  *
  * @returns A promise that resolves to an array of User objects.
  */
-export const fetchUserById = async (id: number, trx?: Knex.Transaction): Promise<User[]> => {
+export const fetchUserById = async (id: number, trx?: Knex.Transaction): Promise<User> => {
   log.info('Fetching users');
 
-  const users = await UserModel.fetchById(id, trx);
+  const user = (await UserModel.fetchById(id, trx)) as User;
 
-  return users;
+  return user;
 };
 /**
  * Fetch current user.
@@ -83,7 +83,7 @@ export const fetchCurrentUser = async (): Promise<User | null> => {
 export const signIn = async (body: { email: string; password: string }): Promise<User> => {
   log.info(`Signing in user with email: ${body.email}`);
 
-  const [existingUser] = await UserModel.fetch({ email: body.email });
+  const [existingUser] = await UserModel.fetch({});
 
   if (!existingUser) {
     throw new BadRequestError('User not found.');

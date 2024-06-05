@@ -1,5 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import {
   FormControl,
@@ -12,13 +11,15 @@ import {
   Container,
   Box,
   Text,
-  Flex,
   FormErrorMessage,
 } from '@chakra-ui/react';
 
 import DashboardLayout from 'components/DashboardLayout';
 
 import { useLeaveTypesQuery } from 'hooks/useLeaveTypesQuery';
+import { useFiscalYearsQuery } from 'hooks/useFiscalYearsQuery';
+
+import { FiscalYear } from 'types/common'; // Adjust the import path as needed
 
 interface FormValues {
   startDate: string;
@@ -33,23 +34,48 @@ function AppyLeave() {
     control,
     formState: { errors },
     watch,
-    setValue,
   } = useForm<FormValues>();
 
   const startDate = watch('startDate');
-
-  const onSubmit: SubmitHandler<FormValues> = data => {
-    console.log(data);
-    // You can handle form submission logic here
-  };
+  const endDate = watch('endDate');
 
   const leaveTypesQuery = useLeaveTypesQuery({});
-
   const {
     isLoading: isLoadingLeaveTypes,
     isSuccess: isSuccessLeaveTypes,
     data: leaveTypes = [],
   } = leaveTypesQuery;
+
+  const fiscalYearsQuery = useFiscalYearsQuery({});
+  const {
+    isLoading: isLoadingFiscalYears,
+    isSuccess: isSuccessFiscalYears,
+    data: fiscalYears = [],
+    isError: isErrorFiscalYears,
+  } = fiscalYearsQuery;
+
+  useEffect(() => {
+    if (isErrorFiscalYears) {
+      console.error('Error fetching fiscal years');
+    } else if (isSuccessFiscalYears) {
+      console.log('Fiscal Years:', fiscalYears);
+    }
+  }, [isErrorFiscalYears, isSuccessFiscalYears, fiscalYears]);
+
+  const onSubmit: SubmitHandler<FormValues> = data => {
+    if (!isSuccessFiscalYears || fiscalYears.length === 0) {
+      console.log('No fiscal years data available');
+      return;
+    }
+
+    const matchingFiscalYear = fiscalYears.find(
+      fiscalYear =>
+        new Date(startDate) >= new Date(fiscalYear.start_date) &&
+        new Date(endDate) <= new Date(fiscalYear.end_date)
+    );
+
+    console.log(matchingFiscalYear);
+  };
 
   return (
     <DashboardLayout bgColor="gray.80">

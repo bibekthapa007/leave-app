@@ -19,6 +19,7 @@ export interface Designation {
 export interface User {
   id: number;
   name: string;
+  email: string;
 }
 
 export interface Country {
@@ -29,6 +30,17 @@ export interface Country {
 export interface LeaveType {
   id: number;
   name: string;
+}
+
+export interface LeaveCredit {
+  id: number;
+  name: string;
+}
+
+export interface FiscalYear {
+  id: number;
+  start_date: string;
+  end_date: string;
 }
 
 export interface DefaultObject {
