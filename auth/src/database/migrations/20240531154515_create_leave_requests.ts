@@ -12,7 +12,12 @@ export async function up(knex: Knex): Promise<void> {
 
     table.specificType('user_id', 'bigint(19)').unsigned().references('id').inTable('users');
 
-    table.integer('fiscal_year_id').unsigned().references('id').inTable('fiscal_years');
+    table
+      .integer('fiscal_year_id')
+      .unsigned()
+      .references('id')
+      .inTable('fiscal_years')
+      .notNullable();
 
     table.specificType('manager_id', 'bigint(19)').unsigned().references('id').inTable('users');
 
@@ -20,7 +25,7 @@ export async function up(knex: Knex): Promise<void> {
 
     table.timestamp('end_date').notNullable();
 
-    table.enu('status', ['PEDNING', 'APPROVED', 'REJECTED', 'CANCELED']).notNullable();
+    table.enu('status', ['PENDING', 'APPROVED', 'REJECTED', 'CANCELED']).notNullable();
 
     table.integer('leave_days').notNullable();
 

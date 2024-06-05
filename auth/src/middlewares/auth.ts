@@ -22,6 +22,8 @@ const authenticationMiddleware = (req: Request, res: Response, next: NextFunctio
 
   const userPayload = verify(accessToken) as { data: User };
 
+  console.log(`--${accessToken}--`, userPayload);
+
   addToStore({ currentUser: userPayload?.data });
 
   next();

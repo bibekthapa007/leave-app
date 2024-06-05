@@ -22,3 +22,19 @@ export const fetchFiscalYears = async (
 
   return fiscalYears;
 };
+
+/**
+ * Fetch list of fiscal years.
+ *
+ * @returns A promise that resolves to an array of fiscal years objects.
+ */
+export const fetchFiscalYearById = async (
+  id: number,
+  params: Any,
+  trx?: Knex.Transaction
+): Promise<FiscalYear[]> => {
+  log.info(`Fetching fiscal years by id: ${id} `);
+  const fiscalYears = await FiscalYearModel.fetchById(id, params, trx);
+
+  return fiscalYears;
+};

@@ -24,8 +24,8 @@ class LeaveCreditsModel extends BaseModel {
         user_id: 'lc.user_id',
         default_days: 'lt.default_days',
         leave_type_id: 'lc.leave_type_id',
-        leave_days: 'lc.leave_days',
-        taken_days: 'lc.taken_days',
+        available_days: 'lc.available_days',
+        remaining_days: 'lc.remaining_days',
         leave_type_name: 'lt.name',
       })
       .from({ lc: this.table })
@@ -61,7 +61,10 @@ class LeaveCreditsModel extends BaseModel {
    * @param {Knex.Transaction} trx
    * @returns
    */
-  static fetch(filter?: { userId: number; fiscalYearId: number }, trx?: Knex.Transaction) {
+  static fetch(
+    filter?: { userId: number; fiscalYearId: number },
+    trx?: Knex.Transaction
+  ): Promise<LeaveCredit[]> {
     const query = this.baseQuery(trx);
 
     this.injectFilter(query, filter);

@@ -58,6 +58,7 @@
     "node": ">=20.11.0"
   },
   "dependencies": {
+    "@joi/date": "^2.1.1",
     "@leapfrogtechnology/async-store": "^2.0.0",
     "@sentry/node": "^7.98.0",
     "@types/compression": "^1.7.5",

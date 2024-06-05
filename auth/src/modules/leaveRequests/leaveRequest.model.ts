@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 
 import BaseModel from '@/models/baseModel';
 
-import { LeaveRequest, LeaveStatusEnum } from '@/types/leave';
+import { LeaveRequest, LeaveRequestBody, LeaveRequestFilter, LeaveStatusEnum } from '@/types/leave';
 import { Any } from '@/types/common';
 
 import dbTables from '@/constants/db';
@@ -54,7 +54,11 @@ class LeaveRequestsModel extends BaseModel {
    * @param {Knex.QueryBuilder} query
    * @param {FilterNotesParams} filters
    */
-  static injectFilter(query: Knex.QueryBuilder, filters: Any) {
+  static injectFilter(query: Knex.QueryBuilder, filters: LeaveRequestFilter) {
+    if (filters?.id) {
+      query.where('lq.id', filters.id);
+    }
+
     if (filters?.userId) {
       query.where('u.id', filters.userId);
     }
@@ -67,6 +71,19 @@ class LeaveRequestsModel extends BaseModel {
       query.where('fy.id', filters.fiscalYearId);
     }
 
+    if (filters.startDate && filters.endDate) {
+      query.where(function () {
+        this.whereRaw(
+          `(lq.start_date >= '${filters.startDate}' AND lq.end_date <= '${filters.endDate}')`
+        )
+          .orWhereRaw(
+            `(lq.start_date <= '${filters.startDate}' AND lq.end_date >= '${filters.endDate}')`
+          )
+          .orWhereBetween('lq.start_date', [filters.startDate, filters.endDate])
+          .orWhereBetween('lq.end_date', [filters.startDate, filters.endDate]);
+      });
+    }
+
     return query;
   }
 
@@ -77,7 +94,7 @@ class LeaveRequestsModel extends BaseModel {
    * @param {Knex.Transaction} trx
    * @returns
    */
-  static fetch(filter?: { userId?: number; fiscalYearId?: number }, trx?: Knex.Transaction) {
+  static fetch(filter?: LeaveRequestFilter, trx?: Knex.Transaction) {
     const query = this.baseQuery(trx);
 
     this.injectFilter(query, filter);
@@ -85,7 +102,7 @@ class LeaveRequestsModel extends BaseModel {
     return query.then(res => res.map(this.mapToModel));
   }
 
-  static async create(data: LeaveRequest, trx?: Knex.Transaction) {
+  static async create(data: LeaveRequestBody, trx?: Knex.Transaction) {
     return this.queryBuilder(trx).table(this.table).insert(data);
   }
 
@@ -93,7 +110,7 @@ class LeaveRequestsModel extends BaseModel {
     return this.queryBuilder(trx).select('*').from(this.table).where('id', id).first();
   }
 
-  static async update(id: number, updates: Partial<LeaveRequest>, trx?: Knex.Transaction) {
+  static async update(id: number, updates: Partial<LeaveRequestBody>, trx?: Knex.Transaction) {
     return this.queryBuilder(trx).table(this.table).update(updates).where('id', id);
   }
 
@@ -102,6 +119,7 @@ class LeaveRequestsModel extends BaseModel {
   }
 
   static mapToModel(leave: Any): LeaveRequest {
+    console.log(leave);
     const data = leave.id && {
       id: leave.id,
       user: leave.userId && {

@@ -9,6 +9,8 @@ import { createLeaveCreditSchema } from './leaveCredits.validator';
 
 const router = Router();
 
+router.use(requireAuth);
+
 router.get('/', leaveCreditController.fetchLeaveCredits);
 
 router.get('/:id', leaveCreditController.fetchLeaveCreditById);

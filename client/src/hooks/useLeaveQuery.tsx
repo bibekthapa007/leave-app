@@ -7,11 +7,11 @@ import { Any, DefaultObject } from 'types/common';
 import paths from 'constants/paths';
 
 export const useLeaveQuery = (params: DefaultObject = {}) => {
-  const pulseAllocationQuery = useQuery({
+  const leaveQuery = useQuery({
     queryKey: [paths.leave],
     queryFn: ({ signal }: Any) => fetchLeaves(params, signal),
     enabled: !!params,
   });
 
-  return pulseAllocationQuery;
+  return leaveQuery;
 };

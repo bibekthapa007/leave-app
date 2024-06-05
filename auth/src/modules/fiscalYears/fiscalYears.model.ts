@@ -10,14 +10,43 @@ class FiscalYearModel extends BaseModel {
   static table = dbTables.fiscalYears;
 
   /**
-   * Insert data into fiscal_years table.
+   * Base query.
    *
-   * @param {Partial<FiscalYear>} data
-   * @param {Knex.Transaction} [trx]
-   * @returns {Knex.QueryBuilder<number[]>}
+   * @param {id} number
+   * @param {Knex.Transaction} trx
+   * @returns
    */
-  static insert(data: Partial<FiscalYear>, trx?: Knex.Transaction) {
-    return this.queryBuilder(trx).table(this.table).insert(data);
+  static baseQuery(trx?: Knex.Transaction) {
+    return this.queryBuilder(trx)
+      .select('*')
+      .from({ fy: this.table })
+      .leftJoin({ c: dbTables.countries }, 'c.id', 'fy.country_id');
+  }
+
+  /**
+   * Inject filter in query.
+   *
+   * @param {Knex.QueryBuilder} query
+   * @param {FilterNotesParams} filters
+   */
+  static injectFilter(query: Knex.QueryBuilder, filters: Any) {
+    if (filters?.id) {
+      query.where('fy.id', filters.id);
+    }
+
+    if (filters?.isCurrent) {
+      query.where('fy.isCurrent', filters.isCurrent);
+    }
+
+    if (filters?.country) {
+      query.where('c.name', filters.country);
+    }
+
+    if (filters?.countryId) {
+      query.where('c.id', filters.countryId);
+    }
+
+    return query;
   }
 
   /**
@@ -28,7 +57,11 @@ class FiscalYearModel extends BaseModel {
    * @returns {Knex.QueryBuilder<FiscalYear[]>}
    */
   static fetch(filters: Any, trx?: Knex.Transaction) {
-    return this.queryBuilder(trx).select('*').from({ fy: this.table }).where(filters);
+    const query = this.baseQuery(trx);
+
+    this.injectFilter(query, filters);
+
+    return query;
   }
 
   /**
@@ -40,7 +73,22 @@ class FiscalYearModel extends BaseModel {
    * @returns {Knex.QueryBuilder<FiscalYear>}
    */
   static fetchById(id: number, filters: Any, trx?: Knex.Transaction) {
-    return this.queryBuilder(trx).select('*').from({ fy: this.table }).where('id', id).first();
+    const query = this.baseQuery(trx);
+
+    this.injectFilter(query, { ...filters, id });
+
+    return query.first();
+  }
+
+  /**
+   * Insert data into fiscal_years table.
+   *
+   * @param {Partial<FiscalYear>} data
+   * @param {Knex.Transaction} [trx]
+   * @returns {Knex.QueryBuilder<number[]>}
+   */
+  static insert(data: Partial<FiscalYear>, trx?: Knex.Transaction) {
+    return this.queryBuilder(trx).table(this.table).insert(data);
   }
 
   /**

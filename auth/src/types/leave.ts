@@ -18,12 +18,19 @@ export enum LeaveStatusEnum {
   CANCELED = 'CANCELED',
 }
 
+export interface LeaveCreditFilter {
+  id: number;
+  leaveTypeId: number;
+  userId: number;
+  fiscalYearId: number;
+}
+
 export interface LeaveCredit {
   id: number;
   leaveTypeId: number;
   userId: number;
-  defaultDays: number;
-  maxDays: number;
+  leaveDays: number;
+  takenDays: number;
   createdAt: Date;
   createdBy: number;
   updatedAt: Date;
@@ -43,6 +50,17 @@ export interface LeaveRequestBody {
   reason: string;
   createdBy?: number;
   updatedBy?: number;
+}
+
+export interface LeaveRequestFilter {
+  id?: number;
+  leaveTypeId?: number;
+  userId?: number;
+  fiscalYearId?: number;
+  managerId?: number;
+  startDate?: Date;
+  endDate?: Date;
+  status?: LeaveStatusEnum;
 }
 
 export interface LeaveRequest {
