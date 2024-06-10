@@ -30,3 +30,9 @@ export const updateLeaveRequestSchema = Joi.object({
   reason: Joi.string(),
   fiscalYearId: Joi.number().integer().required(),
 });
+
+export const updateLeaveRequestStatusSchema = Joi.object({
+  status: Joi.string()
+    .valid(...Object.values(LeaveStatusEnum))
+    .required(),
+});
