@@ -8,6 +8,7 @@ const dbTables = {
   leaveCredits: 'leave_credits',
   fiscalYears: 'fiscal_years',
   leaveRequests: 'leave_requests',
+  notifications: 'notifications',
 } as const;
 
 export default dbTables;
