@@ -87,6 +87,18 @@ class LeaveCreditsModel extends BaseModel {
   static async delete(id: number, trx?: Knex.Transaction) {
     return this.queryBuilder(trx).table(this.table).delete().where('id', id);
   }
+
+  static mapToModel(leave: Any): LeaveCredit {
+    const data = leave.id && {
+      ...leave,
+      leaveType: leave.leave_type_id && {
+        id: leave.leaveTypeId,
+        name: leave.leaveTypeName,
+      },
+    };
+
+    return data as LeaveCredit;
+  }
 }
 
 export default LeaveCreditsModel;

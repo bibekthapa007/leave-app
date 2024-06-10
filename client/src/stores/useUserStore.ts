@@ -36,8 +36,6 @@ const useUserStore = create<TUserStore>()(set => ({
 
       set({ ...initialState, success: true, loading: false, data });
     } catch (error: Any) {
-      console.error('Error in data fetch:', error);
-
       set({ ...initialState, error: true, loading: false, errorData: error?.message });
     }
   },

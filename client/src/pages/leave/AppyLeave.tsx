@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import {
   FormControl,
@@ -14,30 +14,40 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 
+import { createLeaveRequest } from 'services/leaveRequest';
+
 import DashboardLayout from 'components/DashboardLayout';
+import { notify } from 'components/Toast';
 
 import { useLeaveTypesQuery } from 'hooks/useLeaveTypesQuery';
 import { useFiscalYearsQuery } from 'hooks/useFiscalYearsQuery';
+import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery';
 
-import { FiscalYear } from 'types/common'; // Adjust the import path as needed
+import { getDifferenceBetweenDates } from 'utils/date';
+import { handleError } from 'utils/handleError';
 
-interface FormValues {
+import { FiscalYear } from 'types/common';
+
+interface ApplyLeaveFormValues {
   startDate: string;
   endDate: string;
-  leaveType: string;
-  condition: string;
+  leaveType?: string;
+  reason: string;
+  fiscalYearId?: number;
+  leaveTypeId: number;
+  userId: number;
+  leaveDays: number;
 }
 
-function AppyLeave() {
+function ApplyLeave() {
   const {
     handleSubmit,
     control,
     formState: { errors },
     watch,
-  } = useForm<FormValues>();
+  } = useForm<ApplyLeaveFormValues>();
 
-  const startDate = watch('startDate');
-  const endDate = watch('endDate');
+  const formStartDate = watch('startDate');
 
   const leaveTypesQuery = useLeaveTypesQuery({});
   const {
@@ -46,35 +56,57 @@ function AppyLeave() {
     data: leaveTypes = [],
   } = leaveTypesQuery;
 
-  const fiscalYearsQuery = useFiscalYearsQuery({});
   const {
     isLoading: isLoadingFiscalYears,
     isSuccess: isSuccessFiscalYears,
     data: fiscalYears = [],
-    isError: isErrorFiscalYears,
-  } = fiscalYearsQuery;
+  } = useFiscalYearsQuery({});
 
-  useEffect(() => {
-    if (isErrorFiscalYears) {
-      console.error('Error fetching fiscal years');
-    } else if (isSuccessFiscalYears) {
-      console.log('Fiscal Years:', fiscalYears);
-    }
-  }, [isErrorFiscalYears, isSuccessFiscalYears, fiscalYears]);
+  const {
+    isLoading: isLoadingCurrentUser,
+    isError: isErrorCurrentUser,
+    data: currentUser,
+  } = useCurrentUserQuery();
 
-  const onSubmit: SubmitHandler<FormValues> = data => {
-    if (!isSuccessFiscalYears || fiscalYears.length === 0) {
-      console.log('No fiscal years data available');
-      return;
-    }
+  const onSubmit: SubmitHandler<ApplyLeaveFormValues> = async formData => {
+    const { startDate, endDate, reason, leaveType } = formData;
+    const leaveDays = getDifferenceBetweenDates(startDate, endDate, 'days');
 
-    const matchingFiscalYear = fiscalYears.find(
-      fiscalYear =>
-        new Date(startDate) >= new Date(fiscalYear.start_date) &&
-        new Date(endDate) <= new Date(fiscalYear.end_date)
+    const userId = currentUser?.id;
+
+    const fiscalYear = fiscalYears.find(
+      year =>
+        new Date(startDate) >= new Date(year.startDate) &&
+        new Date(endDate) <= new Date(year.endDate)
     );
 
-    console.log(matchingFiscalYear);
+    if (!fiscalYear?.id) {
+      notify({
+        type: 'danger',
+        data: { title: 'Error', message: 'Fiscal year not found' },
+      });
+    }
+
+    const data = {
+      startDate,
+      endDate,
+      reason,
+      userId,
+      fiscalYearId: (fiscalYear as FiscalYear).id,
+      leaveTypeId: parseInt(leaveType as string, 10),
+      leaveDays: leaveDays + 1,
+    };
+
+    try {
+      await createLeaveRequest(data);
+
+      notify({
+        type: 'success',
+        data: { title: 'Success', message: 'Leave request applied successfully' },
+      });
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (
@@ -125,22 +157,22 @@ function AppyLeave() {
                   rules={{
                     required: 'Ending date is required',
                     validate: value =>
-                      value >= startDate || 'End date must be after or equal to start date',
+                      value >= formStartDate || 'End date must be after or equal to start date',
                   }}
                   render={({ field }) => <Input {...field} type="date" />}
                 />
                 <FormErrorMessage>{errors.endDate && errors.endDate.message}</FormErrorMessage>
               </FormControl>
-              <FormControl id="condition" isInvalid={!!errors.condition}>
-                <FormLabel>Describe Your Condition</FormLabel>
+              <FormControl id="reason" isInvalid={!!errors.reason}>
+                <FormLabel>Reason</FormLabel>
                 <Controller
-                  name="condition"
+                  name="reason"
                   control={control}
                   defaultValue=""
-                  rules={{ required: 'Condition is required' }}
+                  rules={{ required: 'Reason is required' }}
                   render={({ field }) => <Textarea {...field} />}
                 />
-                <FormErrorMessage>{errors.condition && errors.condition.message}</FormErrorMessage>
+                <FormErrorMessage>{errors.reason && errors.reason.message}</FormErrorMessage>
               </FormControl>
               <Button type="submit">Submit</Button>
             </VStack>
@@ -151,4 +183,4 @@ function AppyLeave() {
   );
 }
 
-export default AppyLeave;
+export default ApplyLeave;

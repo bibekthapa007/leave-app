@@ -1,0 +1,13 @@
+.Toastify__toast-container .Toastify__toast {
+  padding: 0;
+}
+
+.Toastify__toast-container .Toastify__toast .progress-bar {
+  background-color: white;
+}
+
+.Toastify__toast-container .Toastify__toast-body {
+  margin: 0;
+  border-radius: 0.125rem;
+  padding: 0;
+}

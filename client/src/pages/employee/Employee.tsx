@@ -2,9 +2,8 @@ import { Box, Text } from '@chakra-ui/layout';
 import { Spinner, Container } from '@chakra-ui/react';
 import { ColumnDef } from '@tanstack/react-table';
 
-import LeaveTable from 'pages/leave/LeaveTable';
-
 import DashboardLayout from 'components/DashboardLayout';
+import Table from 'components/table/Table';
 
 import { useUsersQuery } from 'hooks/useUsersQuery';
 
@@ -83,7 +82,8 @@ export default function Employee() {
           <Text fontSize="2xl" fontWeight="bold" color="gray.10" mb={5} mt={5}>
             Employee
           </Text>
-          <LeaveTable
+          <Table
+            loading={false}
             columns={userColumns}
             data={users}
             emptyMessage="No employee data available."

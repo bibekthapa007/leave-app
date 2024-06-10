@@ -13,4 +13,5 @@ export default {
   user: 'user',
   countries: 'countries',
   leaveTypes: 'leave-types',
+  leaveRequests: 'leave-request',
 } as const;

@@ -1,8 +1,7 @@
-import React from 'react';
-import classNames from 'classnames';
+import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { FaCheckCircle, FaTimesCircle, FaExclamationCircle } from 'react-icons/fa';
-import 'react-toastify/dist/ReactToastify.css';
+import classNames from 'classnames';
 
 const ICON_SIZE = 20;
 
@@ -37,10 +36,10 @@ function CustomToast({ statusType, toastMessage, toastClassName }: CustomToastPr
       {toastType && toastType !== undefined && (
         <div
           className={classNames(
-            'flex items-center bg-tertiary-green-60 py-4 px-4 text-white',
+            'flex items-center bg-green-700 py-4 px-4 text-white',
             {
-              'bg-tertiary-red-60': toastType.className === 'danger',
-              'bg-tertiary-yellow-60-60': toastType.className === 'warning',
+              'bg-red-700': toastType.className === 'danger',
+              'bg-yellow-700': toastType.className === 'warning',
             },
             toastClassName
           )}
@@ -57,7 +56,7 @@ function CustomToast({ statusType, toastMessage, toastClassName }: CustomToastPr
 }
 
 interface NotifyProps {
-  autoClose?: number;
+  autoClose?: number | false;
   className?: string;
   data: { title: string; message: string };
   draggable?: boolean;
@@ -67,7 +66,6 @@ interface NotifyProps {
 export const notify = (props: NotifyProps) => {
   const { autoClose = 2000, data, draggable = false, type } = props;
 
-  // Toast message not showing
   toast(<CustomToast statusType={type} toastMessage={data} />, {
     autoClose,
     closeButton: false,
@@ -78,5 +76,5 @@ export const notify = (props: NotifyProps) => {
 };
 
 export default function Toast() {
-  return <ToastContainer className="lf-toast__container" />;
+  return <ToastContainer className="toast__container" />;
 }

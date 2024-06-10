@@ -10,6 +10,5 @@ export async function fetchCountries(params: Any, signal?: AbortSignal): Promise
 
   const { data } = await http.get(url, { signal, params });
 
-  console.log(data);
   return data;
 }

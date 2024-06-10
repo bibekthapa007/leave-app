@@ -67,6 +67,8 @@ export const fetchCurrentUser = async (): Promise<User | null> => {
 
   const currentUser = await getCurrentUser();
 
+  console.log('Current user', currentUser);
+
   if (!currentUser?.id) {
     return null;
   }

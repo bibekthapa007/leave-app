@@ -4,7 +4,7 @@ import { addToStore, getFromStore } from '@/services/store';
 
 import { verify } from '@/utils/jwt';
 
-import { ForbiddenError } from '@/errors/errors';
+import { ForbiddenError, UnauthorizedError } from '@/errors/errors';
 
 import { User } from '@/types/user';
 
@@ -33,7 +33,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
   const currentUser = getFromStore('currentUser');
 
   if (!currentUser) {
-    throw new ForbiddenError('Forbidden. User not authenticated.');
+    throw new UnauthorizedError('Forbidden. User not authenticated.');
   }
 
   next();

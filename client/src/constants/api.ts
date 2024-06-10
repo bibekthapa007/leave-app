@@ -16,6 +16,8 @@ const api = {
     leaveCredits: '/auth/leave-credits',
     fiscalYears: '/auth/fiscal-years',
     leaves: '/auth/leaves',
+    leaveRequests: '/auth/leave-requests',
+    updateLeaveStatus: '/auth/leave-requests/:id/status',
   },
   leave: {
     leave: '/leave',

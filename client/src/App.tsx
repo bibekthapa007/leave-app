@@ -10,6 +10,7 @@ import useUserStore from 'stores/useUserStore';
 
 import AuthRoute from 'components/AuthRoute';
 import Home from 'components/Home';
+import Toast from 'components/Toast';
 
 import { createRoute } from 'utils/route';
 
@@ -28,28 +29,9 @@ const queryClient = new QueryClient({
 });
 
 export function App() {
-  const { data: user, loading, fetchUser, updateUser, removeUser } = useUserStore();
+  const { loading, fetchUser } = useUserStore();
 
   useEffect(() => {
-    const fakeUser: User = {
-      id: 1,
-      name: 'John Doe',
-      email: 'Bibek',
-      department: 'PMT',
-      phone: '123',
-      country: 'Nepal',
-      designation: {
-        id: 1,
-        name: 'Software Engineer',
-      },
-      roles: [
-        {
-          id: 1,
-          name: 'Admin',
-        },
-      ],
-    };
-
     fetchUser();
   }, [fetchUser]);
 
@@ -60,6 +42,7 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
+        <Toast />
         <BrowserRouter>
           <Route exact path={createRoute([paths.signin])} component={SignIn} />
 

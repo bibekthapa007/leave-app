@@ -1,5 +1,3 @@
-import jwtDecode from 'jwt-decode';
-
 import { ACCESS_TOKEN } from 'constants/common';
 
 import * as storage from './storage';

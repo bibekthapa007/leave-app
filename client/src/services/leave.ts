@@ -3,17 +3,14 @@ import axios from 'axios';
 
 import { buildUrl } from 'utils/string';
 import http from 'utils/http';
+import { interpolate } from 'utils/interpolate';
 
-import { Leave, LeaveTypeEnum } from 'types/Leave';
+import { Leave, LeaveStatusEnum } from 'types/Leave';
 
 import api from 'constants/api';
 
 export async function fetchLeaves(params: any, signal?: AbortSignal): Promise<Leave[]> {
-  const url = buildUrl(api.leave.leave);
-
-  return [
-    { id: 1, date: '2024-01-01', status: 'pending', description: 'des', type: LeaveTypeEnum.SICK },
-  ];
+  const url = buildUrl(api.auth.leaveRequests);
 
   const { data } = await http.get(url, { signal, params });
 
@@ -28,6 +25,14 @@ export const createLeave = async (data: Leave) => {
 
 export const updateLeave = async (data: Leave) => {
   const response = await axios.post(api.leave.leave, data);
+
+  return response.data;
+};
+
+export const updateLeaveStatus = async (id: number, data: { status: LeaveStatusEnum }) => {
+  const url = buildUrl(api.baseUrl, interpolate(api.auth.updateLeaveStatus, { id }));
+
+  const response = await http.post(url, data);
 
   return response.data;
 };

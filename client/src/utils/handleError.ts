@@ -10,8 +10,8 @@ export function handleError(error: Error | unknown | Any) {
   const errors = error?.response?.data?.errors || error?.response?.data?.error;
 
   const errorMessage = isArray(errors)
-    ? error[0]?.message || error[0] || en.toast.SOMETHING_WENT_WRONG
-    : error?.message || error || en.toast.SOMETHING_WENT_WRONG;
+    ? errors[0]?.message || errors[0] || en.toast.SOMETHING_WENT_WRONG
+    : errors?.message || errors || en.toast.SOMETHING_WENT_WRONG;
 
   errorToast({ title: ToastMessageType.ERROR, message: errorMessage });
 }

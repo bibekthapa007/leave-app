@@ -1,9 +1,8 @@
 import { Box, Text, Spinner, Container } from '@chakra-ui/react';
 import { ColumnDef } from '@tanstack/react-table';
 
-import LeaveTable from 'pages/leave/LeaveTable';
-
 import DashboardLayout from 'components/DashboardLayout';
+import Table from 'components/table/Table';
 
 import { useLeaveCreditsQuery } from 'hooks/useLeaveCreditsQuery';
 import { useLeaveTypesQuery } from 'hooks/useLeaveTypesQuery';
@@ -26,36 +25,50 @@ export default function LeaveBalance() {
     data: leaveTypes = [],
   } = leaveTypesQuery;
 
-  const combinedData = leaveCredits.map(leaveCredit => {
-    const leaveType = leaveTypes.find(type => type.id === leaveCredit.id);
+  const combinedData = leaveTypes.map(leaveType => {
+    const leaveCredit = leaveCredits.find(credit => credit.leaveTypeId === leaveType.id);
 
     return {
       ...leaveCredit,
-      leave: leaveType ? leaveType.name : 'Unknown',
-      available: leaveCredit.id - leaveCredit.id,
+      leaveType,
+      leave: leaveCredit?.leaveDays || 0,
+      available: leaveCredit?.takenDays || 0,
     };
   });
 
-  const leaveColumns: Array<ColumnDef<LeaveCredit>> = [
+  const leaveColumns: Array<ColumnDef<Partial<LeaveCredit>>> = [
+    {
+      header: 'SN',
+      cell: ({ row: { index } }: { row: { index: number } }) => index + 1,
+      size: 40,
+    },
     {
       header: 'Leave',
       accessorKey: 'leave',
       size: 240,
+      cell: ({ row }) => row.original.leaveType?.name || 'N/A',
     },
     {
       header: 'Credits',
       accessorKey: 'leaveDays',
-      size: 240,
+      size: 100,
+      cell: ({ row }) => row.original.leaveDays || 0,
     },
     {
       header: 'Taken',
       accessorKey: 'takenDays',
       size: 100,
+      cell: ({ row }) => row.original.takenDays || 0,
     },
     {
       header: 'Available',
       accessorKey: 'available',
       size: 100,
+      cell: ({ row }) => {
+        const { leaveDays, takenDays } = row.original;
+
+        return (leaveDays || 0) - (takenDays || 0);
+      },
     },
   ];
 
@@ -86,9 +99,10 @@ export default function LeaveBalance() {
       <Box pt={2}>
         <Container maxW="6xl">
           <Text fontSize="2xl" fontWeight="bold" color="gray.10" mb={5} mt={5}>
-            Leave
+            Leave Balance
           </Text>
-          <LeaveTable
+          <Table
+            loading={false}
             columns={leaveColumns}
             data={combinedData}
             emptyMessage="No leave data available."

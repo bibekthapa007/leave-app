@@ -26,6 +26,14 @@ export class ForbiddenError extends BaseError {
   }
 }
 
+export class UnauthorizedError extends BaseError {
+  statusCode = HttpStatus.UNAUTHORIZED;
+
+  serializeErrors() {
+    return [{ message: this.message }];
+  }
+}
+
 export class RowNotFoundError extends BaseError {
   statusCode = HttpStatus.NOT_FOUND;
 

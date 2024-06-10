@@ -12,9 +12,9 @@ const router = Router();
 // TODO: use requireAuth
 router.get('/', userController.fetchUsers);
 
-router.get('/:id', userController.fetchUserById);
-
 router.get('/currentuser', userController.fetchCurrentUser);
+
+router.get('/:id', requireAuth, userController.fetchUserById);
 
 router.post('/signin', validateReqBody(userValidator.signInSchema), userController.signIn);
 

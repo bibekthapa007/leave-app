@@ -9,4 +9,5 @@ export default {
   leaveCredits: 'leave-credits',
   fiscalYears: 'fiscal-years',
   currentUser: 'currentuser',
+  leaveRequests: 'leaveRequests',
 } as const;

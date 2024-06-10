@@ -34,13 +34,34 @@ export interface LeaveType {
 
 export interface LeaveCredit {
   id: number;
-  name: string;
+  leaveTypeId?: number;
+  leaveType: {
+    id: number;
+    name: string;
+  };
+  userId: number;
+  leaveDays: number;
+  takenDays: number;
+  createdAt: Date;
+  createdBy: number;
+  updatedAt: Date;
+  updatedBy: number;
 }
 
 export interface FiscalYear {
   id: number;
-  start_date: string;
-  end_date: string;
+  startDate: string;
+  endDate: string;
+  countryId: number;
+}
+
+export interface LeaveRequest {
+  id: number;
+  name: string;
+  status: string;
+  user: User;
+  startDate: string;
+  endDate: string;
 }
 
 export interface DefaultObject {

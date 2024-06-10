@@ -27,7 +27,11 @@ export interface LeaveCreditFilter {
 
 export interface LeaveCredit {
   id: number;
-  leaveTypeId: number;
+  leaveTypeId?: number;
+  leaveType: {
+    id: number;
+    name: string;
+  };
   userId: number;
   leaveDays: number;
   takenDays: number;

@@ -1,0 +1,25 @@
+import { buildUrl } from 'utils/string';
+import http from 'utils/http';
+
+import { Any, LeaveRequest } from 'types/common';
+
+import api from 'constants/api';
+
+export async function fetchLeaveRequests(
+  params: Any,
+  signal?: AbortSignal
+): Promise<LeaveRequest[]> {
+  const url = buildUrl(api.auth.leaveRequests);
+
+  const { data } = await http.get(url, { signal, params });
+
+  return data;
+}
+
+export const createLeaveRequest = async (data: Partial<LeaveRequest>) => {
+  const url = buildUrl(api.baseUrl, api.auth.leaveRequests);
+
+  const response = await http.post(url, data);
+
+  return response.data;
+};

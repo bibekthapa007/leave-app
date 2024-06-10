@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
 
 import './styles.css';
+import './styles/toast.css';
 
 const container = document.getElementById('root');
 if (!container) throw new Error('Failed to find the root element');

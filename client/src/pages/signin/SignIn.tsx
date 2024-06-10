@@ -9,7 +9,6 @@ import InputField from 'components/InputField';
 import Alert from 'components/Alert';
 
 import { parseError } from 'utils/handleError';
-import { get, set } from 'utils/storage';
 import { handleLogin } from 'utils/handleAuth';
 
 import { Any, CustomError } from 'types/common';
@@ -46,8 +45,6 @@ export default function SignIn() {
       setIsSubmitting(false);
     }
   };
-
-  console.log('gg');
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
