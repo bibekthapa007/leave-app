@@ -1,7 +1,7 @@
 import { buildUrl } from 'utils/string';
 import http from 'utils/http';
 
-import { User } from 'types/common';
+import { User } from 'types/User';
 
 import api from 'constants/api';
 

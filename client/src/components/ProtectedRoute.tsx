@@ -17,7 +17,7 @@ interface ProtectedRouteProps {
 }
 
 function ProtectedRoute(props: ProtectedRouteProps) {
-  const { exact = false, path, component, requiredRoles: requiredPermissions, render } = props;
+  const { exact = false, path, component, requiredRoles, render } = props;
 
   const user = useUserStore(state => state.data);
 
@@ -25,12 +25,12 @@ function ProtectedRoute(props: ProtectedRouteProps) {
 
   const isAuthorized =
     currentUserRoles &&
-    requiredPermissions.some(requiredRole =>
+    requiredRoles.some(requiredRole =>
       currentUserRoles.some((role: Role) => role.name === requiredRole)
     );
 
   if (!isAuthorized) {
-    return <Redirect to={paths.signin} />;
+    return <Redirect to={paths.leave} />;
   }
 
   return <Route exact={exact} path={path} component={component} render={render} />;

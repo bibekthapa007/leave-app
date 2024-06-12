@@ -1,3 +1,5 @@
+import { MinimalUser } from './User';
+
 export enum LeaveTypeEnum {
   SICK = 'SICK',
   CASUAL = 'CASUAL',
@@ -20,4 +22,13 @@ export interface Leave {
   type: LeaveTypeEnum;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface LeaveRequest {
+  id: number;
+  name: string;
+  status: string;
+  user: MinimalUser;
+  startDate: string;
+  endDate: string;
 }

@@ -1,7 +1,8 @@
 import { buildUrl } from 'utils/string';
 import http from 'utils/http';
 
-import { Any, User } from 'types/common';
+import { Any } from 'types/common';
+import { User } from 'types/User';
 
 import api from 'constants/api';
 
@@ -21,6 +22,14 @@ export async function fetchUserById(
   const url = buildUrl(api.auth.users, id);
 
   const { data } = await http.get(url, { signal, params });
+
+  return data;
+}
+
+export async function updateUserById(id: number, body: Any, signal?: AbortSignal): Promise<User[]> {
+  const url = buildUrl(api.auth.users, id);
+
+  const { data } = await http.put(url, body, { signal });
 
   return data;
 }

@@ -11,15 +11,15 @@ export interface Role {
   name: string;
 }
 
+export enum Roles {
+  ADMIN = 'Admin',
+  USER = 'User',
+  MANAGER = 'Manager',
+}
+
 export interface Designation {
   id: number;
   name: string;
-}
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
 }
 
 export interface Country {
@@ -53,15 +53,6 @@ export interface FiscalYear {
   startDate: string;
   endDate: string;
   countryId: number;
-}
-
-export interface LeaveRequest {
-  id: number;
-  name: string;
-  status: string;
-  user: User;
-  startDate: string;
-  endDate: string;
 }
 
 export interface DefaultObject {

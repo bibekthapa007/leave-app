@@ -9,13 +9,22 @@ import LeaveBalance from 'pages/leave/LeaveBalance';
 
 import { createRoute } from 'utils/route';
 
+import { Roles } from 'types/common';
+
 import paths from 'constants/paths';
 import routes from 'constants/routes';
+
+import ProtectedRoute from './ProtectedRoute';
 
 function Home() {
   return (
     <Switch>
-      <Route exact path={routes.home} component={Dashboard} />
+      <ProtectedRoute
+        exact
+        path={routes.home}
+        component={Dashboard}
+        requiredRoles={[Roles.ADMIN]}
+      />
 
       <Route exact path={routes.leave} component={Leave} />
 
@@ -23,7 +32,12 @@ function Home() {
 
       <Route exact path={routes.profile} component={Profile} />
 
-      <Route exact path={routes.employee} component={Employee} />
+      <ProtectedRoute
+        exact
+        path={routes.employee}
+        component={Employee}
+        requiredRoles={[Roles.ADMIN]}
+      />
 
       <Route exact path={routes.leavebalance} component={LeaveBalance} />
 

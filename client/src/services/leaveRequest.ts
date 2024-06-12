@@ -1,7 +1,8 @@
 import { buildUrl } from 'utils/string';
 import http from 'utils/http';
 
-import { Any, LeaveRequest } from 'types/common';
+import { Any } from 'types/common';
+import { LeaveRequest } from 'types/Leave';
 
 import api from 'constants/api';
 

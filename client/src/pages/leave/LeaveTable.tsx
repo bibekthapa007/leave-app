@@ -1,7 +1,8 @@
 import { Text } from '@chakra-ui/layout';
-import { Spinner, Heading, Button, Flex } from '@chakra-ui/react';
+import { Button, Flex } from '@chakra-ui/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { UseMutationResult, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 import { updateLeaveStatus } from 'services/leave';
 
@@ -11,9 +12,10 @@ import { notify } from 'components/Toast';
 import { useLeaveRequestsQuery } from 'hooks/useLeaveRequestsQuery';
 
 import { getFormattedDate } from 'utils/date';
+import { handleError } from 'utils/handleError';
 
-import { LeaveStatusEnum } from 'types/Leave';
-import { Any, LeaveRequest } from 'types/common';
+import { LeaveRequest, LeaveStatusEnum } from 'types/Leave';
+import { Any } from 'types/common';
 
 import queryKey from 'constants/queryKey';
 
@@ -100,8 +102,15 @@ export default function LeaveTable() {
   const {
     isLoading: isLoadingLeaveRequests,
     data: leaveRequests = [],
+    isError: leaveRequestsIsError,
     error: leaveRequestsError,
   } = leaveRequestsQuery;
+
+  useEffect(() => {
+    if (leaveRequestsIsError) {
+      handleError(leaveRequestsError);
+    }
+  }, [leaveRequestsIsError, leaveRequestsError]);
 
   const queryClient = useQueryClient();
 
@@ -114,24 +123,11 @@ export default function LeaveTable() {
       notify({ type: 'success', autoClose: 0, data: { title: 'Success', message: 'Success' } });
       queryClient.invalidateQueries({ queryKey: [queryKey.leaveRequests] });
     },
+
+    onError: error => {
+      handleError(error);
+    },
   });
-
-  if (isLoadingLeaveRequests) {
-    return (
-      <>
-        <Heading>Loading...</Heading>
-        <Spinner size="md" />
-      </>
-    );
-  }
-
-  if (leaveRequestsError) {
-    return <Heading>Error: {leaveRequestsError.message}</Heading>;
-  }
-
-  if (leaveRequests.length === 0) {
-    return <Heading>No Leave Found.</Heading>;
-  }
 
   return (
     <>
@@ -139,7 +135,7 @@ export default function LeaveTable() {
         Leave
       </Text>
       <Table
-        loading={false}
+        loading={isLoadingLeaveRequests}
         columns={getLeaveColumns({ updateStatus })}
         data={leaveRequests}
         emptyMessage="No leave data available."

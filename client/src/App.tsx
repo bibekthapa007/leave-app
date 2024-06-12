@@ -14,8 +14,6 @@ import Toast from 'components/Toast';
 
 import { createRoute } from 'utils/route';
 
-import { User } from 'types/User';
-
 import paths from 'constants/paths';
 
 import './styles.css';

@@ -2,7 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 
 import { fetchCurrentUser } from 'services/currentUser';
 
-import { User } from 'types/common';
+import { handleError } from 'utils/handleError';
+
+import { User } from 'types/User';
 
 import queryKey from 'constants/queryKey';
 
@@ -11,6 +13,10 @@ export const useCurrentUserQuery = () => {
     queryKey: [queryKey.currentUser],
     queryFn: ({ signal }) => fetchCurrentUser(signal),
   });
+
+  if (currentUserQuery.isError && currentUserQuery.error) {
+    handleError(currentUserQuery.error);
+  }
 
   return currentUserQuery;
 };

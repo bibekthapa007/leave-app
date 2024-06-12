@@ -7,7 +7,7 @@ import Table from 'components/table/Table';
 
 import { useUsersQuery } from 'hooks/useUsersQuery';
 
-import { User } from 'types/common';
+import { User } from 'types/User';
 
 export default function Employee() {
   const usersQuery = useUsersQuery({});

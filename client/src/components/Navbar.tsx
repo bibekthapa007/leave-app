@@ -7,6 +7,8 @@ import useUserStore from 'stores/useUserStore';
 
 import { createRoute } from 'utils/route';
 
+import { Roles } from 'types/common';
+
 import paths from 'constants/paths';
 import { ColorModeSwitcher } from 'ColorModeSwitcher';
 
@@ -17,7 +19,11 @@ type NavbarProps = {
 };
 
 function Navbar({ onOpen }: NavbarProps) {
-  const { removeUser } = useUserStore();
+  const { data: user, removeUser } = useUserStore();
+
+  const userRoles = user?.roles.map(role => role.name) || [];
+
+  const hasRoles = (roles: string[]) => roles.some(role => userRoles.includes(role));
 
   return (
     <Box borderBottom="1px solid " borderColor="gray.200" py={3}>
@@ -55,9 +61,11 @@ function Navbar({ onOpen }: NavbarProps) {
           </Flex>
           <Flex align="center">
             <Flex display={['none', 'none', 'block']}>
-              <Link to={createRoute([paths.employee])} ml={4}>
-                Employee
-              </Link>
+              {hasRoles([Roles.ADMIN]) && (
+                <Link to={createRoute([paths.employee])} ml={4}>
+                  Employee
+                </Link>
+              )}
               <Link to={createRoute([paths.leave])} ml={4}>
                 Leave
               </Link>

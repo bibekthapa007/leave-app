@@ -337,17 +337,13 @@ function Table<T>(props: MyTableProps<T>) {
           )}
         </table>
 
-        {loading && (
-          <Loading
-          //  hasBackground className={classNames('h-80', loadingClassName)}
-          />
-        )}
+        {loading && <Loading hasBackground className={classNames('h-80', loadingClassName)} />}
 
         {showEmptyContent && (
           <Empty
-          // message={emptyMessage}
-          // className={classNames('!h-80', emptyClassName)}
-          // trailing={emptyTrailing}
+            message={emptyMessage}
+            className={classNames('!h-80 ', emptyClassName)}
+            trailing={emptyTrailing}
           />
         )}
       </div>
