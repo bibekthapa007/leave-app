@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
+import * as usersServices from '@/modules/user/user.service';
+
 import { addToStore, getFromStore } from '@/services/store';
 
 import { verify } from '@/utils/jwt';
@@ -8,7 +10,7 @@ import { ForbiddenError, UnauthorizedError } from '@/errors/errors';
 
 import { User } from '@/types/user';
 
-const authenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const authenticationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
   const accessToken = authHeader && authHeader.startsWith('Bearer ') && authHeader.split(' ')[1];
 
@@ -24,7 +26,9 @@ const authenticationMiddleware = (req: Request, res: Response, next: NextFunctio
 
   console.log(`--${accessToken}--`, userPayload);
 
-  addToStore({ currentUser: userPayload?.data });
+  const user = await usersServices.fetchUserById(userPayload?.data.id);
+
+  addToStore({ currentUser: user });
 
   next();
 };

@@ -5,7 +5,6 @@ import { getCurrentUser } from '@/modules/user/user.service';
 
 import { LeaveRequest, LeaveRequestBody } from '@/types/leave';
 
-import { updateLeaveRequest as updateLeaveRequestService } from './leaveRequest.service';
 import * as leaveRequestsService from './leaveRequest.service';
 
 export async function fetchLeaveRequests(req: Request, res: Response): Promise<Response> {
@@ -61,7 +60,9 @@ export async function updateLeaveRequestStatus(req: Request, res: Response): Pro
 
   const { status } = req.body;
 
-  const updatedLeaveRequest = await updateLeaveRequestService(leaveRequestId, { status });
+  const updatedLeaveRequest = await leaveRequestsService.updateLeaveRequest(leaveRequestId, {
+    status,
+  });
 
   return res.status(HttpStatus.OK).json({ data: updatedLeaveRequest });
 }

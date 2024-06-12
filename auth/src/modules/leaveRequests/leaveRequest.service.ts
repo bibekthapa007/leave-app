@@ -3,15 +3,59 @@ import * as leaveTypesService from '@/modules/leaveTypes/leaveType.service';
 
 import { BadRequestError } from '@/errors/errors';
 
-import { LeaveRequest, LeaveRequestBody } from '@/types/leave';
+import { LeaveRequest, LeaveRequestBody, LeaveRequestFilter } from '@/types/leave';
+import { Role, Roles } from '@/types/common';
 
 import db from '@/db';
 
 import leaveRequestsModel from './leaveRequest.model';
 import { getCurrentUser } from '../user/user.service';
 
-export async function fetchLeaveRequests(): Promise<LeaveRequest[]> {
-  return leaveRequestsModel.fetch({});
+function getFetchType(roles: Role[]) {
+  const userRoles = roles.map(role => role.name);
+  if (userRoles.includes(Roles.ADMIN)) {
+    return 'all';
+  }
+
+  if (userRoles.includes(Roles.MANAGER)) {
+    return 'manager';
+  }
+
+  return 'self';
+}
+
+function authorizeFetchType(roles: Role[], fetchType: string, isSelf: boolean) {
+  const userRoles = roles.map(role => role.name);
+
+  if (fetchType === 'all') {
+    if (!userRoles.includes(Roles.ADMIN)) {
+      throw new BadRequestError('Unauthorized to fetch all leave requests.');
+    }
+  }
+
+  if (fetchType === 'manager') {
+    if (!userRoles.includes(Roles.ADMIN)) {
+      throw new BadRequestError('Unauthorized to fetch all user leave requests.');
+    }
+  }
+
+  if (fetchType === 'self' && !isSelf) {
+    if (!userRoles.includes(Roles.ADMIN)) {
+      throw new BadRequestError('Unauthorized to fetch all user leave requests.');
+    }
+  }
+}
+
+export async function fetchLeaveRequests(filters?: LeaveRequestFilter): Promise<LeaveRequest[]> {
+  const currentUser = await getCurrentUser();
+
+  const userId = filters?.userId ? filters.userId : +currentUser?.id;
+
+  const fetchType = filters?.fetchType ? filters.fetchType : getFetchType(currentUser?.roles);
+
+  authorizeFetchType(currentUser?.roles, fetchType, userId === +currentUser?.id);
+
+  return leaveRequestsModel.fetch({ fetchType, currentUserId: +currentUser?.id, userId });
 }
 
 export async function fetchLeaveRequestById(id: number): Promise<LeaveRequest | undefined> {
@@ -47,6 +91,10 @@ export async function createLeaveRequest(leaveRequest: LeaveRequestBody): Promis
     }
 
     const leaveType = await leaveTypesService.fetchLeaveTypeById(leaveRequest.leaveTypeId, trx);
+
+    if (!leaveType) {
+      throw new BadRequestError('Leave type does not exist.');
+    }
 
     const [id] = await leaveRequestsModel.create(
       { ...leaveRequest, createdBy: +currentUser?.id },

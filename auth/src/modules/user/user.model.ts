@@ -34,7 +34,7 @@ class UserModel extends BaseModel {
       .leftJoin('roles as r', 'ur.role_id', 'r.id')
       .select(
         'ur.user_id',
-        db.raw("JSON_ARRAYAGG(JSON_OBJECT('id', ur.id, 'name', r.name)) as roles")
+        db.raw("JSON_ARRAYAGG(JSON_OBJECT('id', r.id, 'name', r.name)) as roles")
       )
       .groupBy('ur.user_id');
 

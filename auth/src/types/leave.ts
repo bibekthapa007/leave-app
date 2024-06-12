@@ -60,11 +60,13 @@ export interface LeaveRequestFilter {
   id?: number;
   leaveTypeId?: number;
   userId?: number;
+  currentUserId?: number;
   fiscalYearId?: number;
   managerId?: number;
   startDate?: Date;
   endDate?: Date;
   status?: LeaveStatusEnum;
+  fetchType?: 'all' | 'manager' | 'self';
 }
 
 export interface LeaveRequest {

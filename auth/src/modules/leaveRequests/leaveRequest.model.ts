@@ -71,6 +71,20 @@ class LeaveRequestsModel extends BaseModel {
       query.where('fy.id', filters.fiscalYearId);
     }
 
+    if (filters.fetchType) {
+      if (filters.fetchType === 'all') {
+        query.whereNot('lq.status', LeaveStatusEnum.CANCELED);
+      }
+
+      if (filters.fetchType === 'manager') {
+        query.whereNot('lq.status', LeaveStatusEnum.CANCELED);
+      }
+
+      if (filters.fetchType === 'self') {
+        query.whereNot('lq.status', LeaveStatusEnum.CANCELED);
+      }
+    }
+
     if (filters.startDate && filters.endDate) {
       query.where(function () {
         this.whereRaw(

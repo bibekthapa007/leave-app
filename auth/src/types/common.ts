@@ -15,10 +15,10 @@ export interface DefaultObject {
   [key: string]: Any;
 }
 
-export enum RoleTypeEnum {
+export enum Roles {
   ADMIN = 'Admin',
   USER = 'User',
-  Manager = 'Manager',
+  MANAGER = 'Manager',
 }
 
 export interface Country {
