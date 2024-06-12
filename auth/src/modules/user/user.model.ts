@@ -69,7 +69,7 @@ class UserModel extends BaseModel {
    * @param {Knex.Transaction} trx
    * @returns
    */
-  static fetch(filter?: { id?: number; email?: string }, trx?: Knex.Transaction) {
+  static fetch(filter?: UserFilters, trx?: Knex.Transaction) {
     const query = this.queryBuilder(trx).select('*').from('users as u');
 
     this.injectFilter(query, filter);
@@ -90,6 +90,17 @@ class UserModel extends BaseModel {
 
     if (filters?.email) {
       query.where('u.email', filters.email);
+    }
+
+    if (filters?.excludeIds) {
+      query.whereNotIn(
+        'u.id',
+        filters.excludeIds?.split(',').map(id => parseInt(id, 10))
+      );
+    }
+
+    if (filters?.role) {
+      query.where(db.raw(`JSON_CONTAINS(roles.roles, JSON_OBJECT('name', ?))`, [filters.role]));
     }
 
     return query;

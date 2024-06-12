@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import HttpStatus from 'http-status-codes';
 
-import { updateSessions } from '@/utils/session';
-
 import * as tokenService from './token.service';
 import * as userService from './user.service';
 
@@ -14,7 +12,7 @@ import * as userService from './user.service';
  * @returns {Promise<Response>}
  */
 export const fetchUsers = async (req: Request, res: Response) => {
-  const users = await userService.fetchUsers({});
+  const users = await userService.fetchUsers(req.query);
 
   return res.status(HttpStatus.OK).json({ data: users });
 };
@@ -95,4 +93,19 @@ export const signOut = async (req: Request, res: Response) => {
   res.clearCookie('refreshToken');
 
   return res.json({ message: 'User signed out successfully' });
+};
+
+/**
+ * Get all users.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Promise<Response>}
+ */
+export const updateUserById = async (req: Request, res: Response) => {
+  const userId = +req.params.id as number;
+
+  const users = await userService.updateUserById(userId, req.body);
+
+  return res.status(HttpStatus.OK).json({ data: users });
 };

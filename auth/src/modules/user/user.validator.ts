@@ -14,3 +14,14 @@ export const signUpSchema = Joi.object({
   name: Joi.string().required(),
   phone: Joi.string().required(),
 });
+
+export const updateUserSchema = Joi.object({
+  name: Joi.string().required(),
+  phone: Joi.string().required(),
+  email: Joi.string().email().required(),
+  department: Joi.string().required(),
+  designationId: Joi.number().required(),
+  managerId: Joi.number().optional(),
+  roleIds: Joi.array().items(Joi.number().required()).required(),
+  excludeIds: Joi.string().optional(),
+});

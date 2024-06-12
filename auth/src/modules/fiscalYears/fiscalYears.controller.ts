@@ -15,7 +15,6 @@ export const fetchFiscalYears = async (req: Request, res: Response) => {
     const fiscalYears = await fiscalYearService.fetchFiscalYears({});
     return res.status(HttpStatus.OK).json({ data: fiscalYears });
   } catch (error) {
-    console.error('Error fetching fiscal years:', error);
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
   }
 };

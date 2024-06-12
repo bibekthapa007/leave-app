@@ -2,8 +2,7 @@ import { Knex } from 'knex';
 
 import BaseModel from '@/models/baseModel';
 
-import { User, UserBody, UserFilters } from '@/types/user';
-import { Any, Designation } from '@/types/common';
+import { Any } from '@/types/common';
 
 import dbTables from '@/constants/db';
 
@@ -21,8 +20,30 @@ class RoleModel extends BaseModel {
     return this.queryBuilder(trx).table(this.table).insert(data);
   }
 
+  /**
+   * Inject filter in query.
+   *
+   * @param {Knex.QueryBuilder} query
+   * @param {FilterNotesParams} filters
+   */
+  static injectFilter(query: Knex.QueryBuilder, filters: Any) {
+    if (filters?.roleId) {
+      query.where('r.id', filters.roleId);
+    }
+
+    if (filters?.roleIds) {
+      query.whereIn('r.id', filters.roleIds);
+    }
+
+    return query;
+  }
+
   static fetch(filters?: Any, trx?: Knex.Transaction) {
-    return this.queryBuilder(trx).select('*').from({ d: this.table });
+    const query = this.queryBuilder(trx).select('*').from({ r: this.table });
+
+    this.injectFilter(query, filters);
+
+    return query;
   }
 
   static fetchById(id: number, filters: Any, trx?: Knex.Transaction) {

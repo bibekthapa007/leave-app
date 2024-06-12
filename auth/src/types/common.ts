@@ -11,6 +11,12 @@ export interface Role {
   name: string;
 }
 
+export interface UserRole {
+  id: number;
+  name: string;
+  userId: number;
+  userRoleId: number;
+}
 export interface DefaultObject {
   [key: string]: Any;
 }

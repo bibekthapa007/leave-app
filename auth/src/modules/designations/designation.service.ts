@@ -23,3 +23,19 @@ export const fetchDesignations = async (
 
   return designations;
 };
+
+/**
+ * Fetch designations by id.
+ *
+ * @returns A promise that resolves to an array of Designations objects.
+ */
+export const fetchDesignationById = async (
+  id: number,
+  trx?: Knex.Transaction
+): Promise<Designation> => {
+  log.info('Fetching designations');
+
+  const designation = await DesignationModel.fetchById(id, trx);
+
+  return designation;
+};

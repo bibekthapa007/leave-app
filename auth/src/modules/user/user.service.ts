@@ -1,8 +1,9 @@
 import { Knex } from 'knex';
 
-import UserRoleModel from '@/modules/roles/userRole.model';
+import UserRolesModel from '@/modules/user/userRoles.model';
 import DesignationModel from '@/modules/designations/designation.model';
 import RoleModel from '@/modules/roles/role.model';
+import * as designationService from '@/modules/designations/designation.service';
 
 import logger from '@/services/logger';
 import { getFromStore } from '@/services/store';
@@ -11,8 +12,8 @@ import { compareHash, generateHash } from '@/utils/crypto';
 
 import { BadRequestError } from '@/errors/errors';
 
-import { User } from '@/types/user';
-import { Any, Role } from '@/types/common';
+import { User, UserFilters } from '@/types/user';
+import { Designation, Role, Roles, UserRole } from '@/types/common';
 
 import db from '@/db';
 
@@ -26,10 +27,10 @@ const log = logger.withNamespace('modules/user.service');
  *
  * @returns A promise that resolves to an array of User objects.
  */
-export const fetchUsers = async (params: Any, trx?: Knex.Transaction): Promise<User[]> => {
+export const fetchUsers = async (filters: UserFilters, trx?: Knex.Transaction): Promise<User[]> => {
   log.info('Fetching users');
 
-  const users = await UserModel.fetchUserDetails({}, trx);
+  const users = await UserModel.fetchUserDetails(filters, trx);
 
   return users;
 };
@@ -46,6 +47,7 @@ export const fetchUserById = async (id: number, trx?: Knex.Transaction): Promise
 
   return user;
 };
+
 /**
  * Fetch current user.
  *
@@ -66,8 +68,6 @@ export const fetchCurrentUser = async (): Promise<User | null> => {
   log.info('Fetching current user.');
 
   const currentUser = await getCurrentUser();
-
-  console.log('Current user', currentUser);
 
   if (!currentUser?.id) {
     return null;
@@ -140,12 +140,118 @@ export const signUp = async (userBody: { password: string } & Omit<User, 'id'>):
 
     const [userId] = await UserModel.insert({ ...userBody, password: hashedPassword }, trx);
 
-    await UserRoleModel.insert({ userId, roleId: userRoleId }, trx);
+    await UserRolesModel.insert({ userId, roleId: userRoleId }, trx);
 
     return userId;
   });
 
   const user = await UserModel.fetchById(insertedUserId);
+
+  return user;
+};
+
+/**
+ * Fetch list of users.
+ *
+ * @returns A promise that resolves to an array of User objects.
+ */
+export const fetchUserRolesByUserId = async (
+  userId: number,
+  trx?: Knex.Transaction
+): Promise<Role[]> => {
+  log.info('Fetching users');
+
+  const roles = (await UserRolesModel.fetch({ userId }, trx)) as Role[];
+
+  return roles;
+};
+
+async function updateRoles(
+  newRoles: Role[],
+  userRoles: UserRole[],
+  userId: number,
+  trx: Knex.Transaction
+): Promise<void> {
+  const currentUser = await getCurrentUser();
+  const toCreate = newRoles.filter(role => !userRoles.find(r => r.id === role.id));
+  const toDelte = userRoles.filter(role => !newRoles.find(r => r.id === role.id));
+
+  if (toCreate.length) {
+    await UserRolesModel.insert(
+      toCreate.map(data => ({ roleId: data.id, userId, createdBy: currentUser.id })),
+      trx
+    );
+  }
+
+  if (toDelte.length) {
+    toDelte.map(async data => await UserRolesModel.deleteById(data.userRoleId, trx));
+  }
+
+  return;
+}
+
+/**
+ * Update the user.
+ *
+ * @param id - The ID of the user to update.
+ * @param userBody - The user object containing the updated details.
+ * @returns A promise that resolves when the user is updated.
+ */
+export const updateUserById = async (id: number, body: Partial<User>): Promise<User> => {
+  log.info(`Updating user with ID: ${id}`);
+
+  const { roleIds, ...userBody } = body;
+
+  const { designationId, managerId } = userBody;
+
+  const [existingUser] = await UserModel.fetchUserDetails({ id });
+
+  if (!existingUser) {
+    throw new BadRequestError('User not found.');
+  }
+
+  const designationPromise = designationId
+    ? designationService.fetchDesignationById(designationId)
+    : Promise.resolve(null);
+
+  const rolesPromise = roleIds?.length ? RoleModel.fetch({ roleIds }) : Promise.resolve(null);
+
+  const userRolesPrmise = roleIds?.length ? fetchUserRolesByUserId(id) : Promise.resolve([]);
+
+  const managerPromise = managerId ? fetchUserById(managerId) : Promise.resolve(null);
+
+  const [designation, roles, userRoles, manager]: [Designation, Role[], UserRole[], User | null] =
+    await Promise.all([designationPromise, rolesPromise, userRolesPrmise, managerPromise]);
+
+  if (designationId && !designation?.id) {
+    throw new BadRequestError('Designation not found.');
+  }
+
+  if (roleIds.length && roleIds?.length !== roles.length) {
+    throw new BadRequestError('Role not found.');
+  }
+
+  if (managerId && !manager?.id) {
+    throw new BadRequestError('Manager not found.');
+  }
+
+  if (managerId && !manager?.roles.find(r => r.name === Roles.MANAGER)) {
+    throw new BadRequestError('Only user with manager role can be assigned as manager.');
+  }
+
+  if (managerId && manager.id === existingUser.id) {
+    throw new BadRequestError('User cannot be assigned as manager to themselves.');
+  }
+
+  await db.transaction(async trx => {
+    await updateRoles(roles, userRoles, id, trx);
+
+    const userId = await UserModel.update(id, userBody, trx);
+
+    return userId;
+  });
+
+  const user = await UserModel.fetchById(id);
 
   return user;
 };

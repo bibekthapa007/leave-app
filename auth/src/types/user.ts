@@ -14,14 +14,18 @@ export interface User {
   department: string;
   designationId?: number;
   designation?: Designation;
+  managerId?: number;
   manager?: MinimalUser;
   phone: string;
+  roleIds?: number[];
   roles: Role[];
 }
 
 export interface UserFilters {
   id?: number;
   email?: string;
+  role?: string;
+  excludeIds?: string;
 }
 
 export type UserBody = Omit<User, 'id'>;

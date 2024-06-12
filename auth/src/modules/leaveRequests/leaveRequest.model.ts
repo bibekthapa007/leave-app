@@ -133,7 +133,6 @@ class LeaveRequestsModel extends BaseModel {
   }
 
   static mapToModel(leave: Any): LeaveRequest {
-    console.log(leave);
     const data = leave.id && {
       id: leave.id,
       user: leave.userId && {

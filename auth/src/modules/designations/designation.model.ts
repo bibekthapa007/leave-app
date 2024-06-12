@@ -25,7 +25,7 @@ class DesignationModel extends BaseModel {
     return this.queryBuilder(trx).select('*').from({ d: this.table });
   }
 
-  static fetchById(id: number, filters: Any, trx?: Knex.Transaction) {
+  static fetchById(id: number, filters?: Any, trx?: Knex.Transaction) {
     return this.queryBuilder(trx).select('*').from({ d: this.table }).where('id', id).first();
   }
 }
