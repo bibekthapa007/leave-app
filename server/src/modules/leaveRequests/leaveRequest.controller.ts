@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 import HttpStatus from 'http-status-codes';
 
-import { getCurrentUser } from '@/modules/user/user.service';
-
-import { LeaveRequest, LeaveRequestBody } from '@/types/leave';
+import { LeaveRequestBody } from '@/types/leave';
 
 import * as leaveRequestsService from './leaveRequest.service';
 
@@ -26,7 +24,6 @@ export async function fetchLeaveRequestById(req: Request, res: Response): Promis
 
 export async function createLeaveRequest(req: Request, res: Response): Promise<Response> {
   const leaveRequest: LeaveRequestBody = req.body;
-  const currentUser = getCurrentUser();
 
   const createdLeaveRequest = await leaveRequestsService.createLeaveRequest(leaveRequest);
 

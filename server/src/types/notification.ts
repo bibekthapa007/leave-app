@@ -1,3 +1,10 @@
+export enum NotificationType {
+  LEAVE_PENDING = 'LEAVE_PENDING',
+  LEAVE_APPROVED = 'LEAVE_APPROVED',
+  LEAVE_REJECTED = 'LEAVE_REJECTED',
+  LEAVE_CACELED = 'LEAVE_CACELED',
+}
+
 export interface Notification {
   id: number;
   userId: number;
@@ -10,7 +17,6 @@ export interface Notification {
   createdBy: number;
   updatedBy?: number;
 }
-
 export interface NotificationBody {
   userId: number;
   type: string;

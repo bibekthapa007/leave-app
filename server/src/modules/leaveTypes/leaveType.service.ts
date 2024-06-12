@@ -2,8 +2,6 @@ import { Knex } from 'knex';
 
 import logger from '@/services/logger';
 
-import { BadRequestError } from '@/errors/errors';
-
 import { LeaveType } from '@/types/leave';
 import { Any } from '@/types/common';
 

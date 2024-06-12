@@ -38,3 +38,20 @@ export function getFormattedDate(
 export function getDate(date?: DateRepresentation, format = YYYY_MM_DD) {
   return moment(date).format(format);
 }
+
+/**
+ * Checks if the date is between start and end date
+ *
+ * @example
+ * isDateBetween('2021-01-01', '2020-12-31', '2021-01-02') // true
+ * isDateBetween('2021-01-01', '2020-12-31', '2021-01-02', 'days', '()') // false
+ */
+export function isDateBetween(
+  date: Date | Moment | string,
+  startDate: Date | Moment | string,
+  endDate: Date | Moment | string,
+  granularity: moment.unitOfTime.DurationConstructor = 'days',
+  inclusivity: '()' | '(]' | '[)' | '[]' = '[]'
+) {
+  return moment(date).isBetween(startDate, endDate, granularity, inclusivity);
+}

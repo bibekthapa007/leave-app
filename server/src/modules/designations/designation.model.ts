@@ -2,8 +2,8 @@ import { Knex } from 'knex';
 
 import BaseModel from '@/models/baseModel';
 
-import { User, UserBody, UserFilters } from '@/types/user';
-import { Any, Designation } from '@/types/common';
+import { UserBody } from '@/types/user';
+import { Any } from '@/types/common';
 
 import dbTables from '@/constants/db';
 

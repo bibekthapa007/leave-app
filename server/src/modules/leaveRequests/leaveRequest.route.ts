@@ -53,10 +53,6 @@ router.delete(
 router.post(
   '/:id/status',
   validateReqBody(leaveRequestsValidator.updateLeaveRequestStatusSchema),
-  authorizeWithRoles({
-    roles: [Roles.ADMIN],
-    extraPrivilegePromises: [authorizeUserManager],
-  }),
   leaveRequestsController.updateLeaveRequestStatus
 );
 

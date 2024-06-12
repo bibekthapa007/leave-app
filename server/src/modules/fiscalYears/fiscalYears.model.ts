@@ -18,7 +18,14 @@ class FiscalYearModel extends BaseModel {
    */
   static baseQuery(trx?: Knex.Transaction) {
     return this.queryBuilder(trx)
-      .select('*')
+      .select({
+        id: 'fy.id',
+        startDate: 'fy.start_date',
+        endDate: 'fy.end_date',
+        isCurrent: 'fy.is_current',
+        countryId: 'fy.country_id',
+        country: 'c.name',
+      })
       .from({ fy: this.table })
       .leftJoin({ c: dbTables.countries }, 'c.id', 'fy.country_id');
   }

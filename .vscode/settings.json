@@ -1,4 +1,4 @@
 {
-  "eslint.workingDirectories": ["auth", "client", "infra"],
+  "eslint.workingDirectories": ["server", "client", "infra"],
   "files.eol": "\n"
 }

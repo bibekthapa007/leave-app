@@ -1,6 +1,8 @@
 import { Box, Text, Spinner, Container } from '@chakra-ui/react';
 import { ColumnDef } from '@tanstack/react-table';
 
+import useUserStore from 'stores/useUserStore';
+
 import DashboardLayout from 'components/DashboardLayout';
 import Table from 'components/table/Table';
 
@@ -10,7 +12,8 @@ import { useLeaveTypesQuery } from 'hooks/useLeaveTypesQuery';
 import { LeaveCredit } from 'types/common';
 
 export default function LeaveBalance() {
-  const leavesQuery = useLeaveCreditsQuery({});
+  const { data: currentUser } = useUserStore();
+  const leavesQuery = useLeaveCreditsQuery({ userId: currentUser?.id });
   const leaveTypesQuery = useLeaveTypesQuery({});
 
   const {

@@ -71,7 +71,7 @@ class LeaveRequestsModel extends BaseModel {
       query.where('fy.id', filters.fiscalYearId);
     }
 
-    if (filters.fetchType) {
+    if (filters?.fetchType) {
       if (filters.fetchType === 'all') {
         query.whereNot('lq.status', LeaveStatusEnum.CANCELED);
       }
@@ -121,7 +121,9 @@ class LeaveRequestsModel extends BaseModel {
   }
 
   static async fetchById(id: number, trx?: Knex.Transaction) {
-    return this.queryBuilder(trx).select('*').from(this.table).where('id', id).first();
+    const query = this.baseQuery(trx);
+
+    return query.first().then(this.mapToModel);
   }
 
   static async update(id: number, updates: Partial<LeaveRequestBody>, trx?: Knex.Transaction) {

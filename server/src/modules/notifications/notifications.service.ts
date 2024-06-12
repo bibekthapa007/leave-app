@@ -2,8 +2,6 @@ import { Knex } from 'knex';
 
 import { getCurrentUser } from '@/modules/user/user.service';
 
-import { BadRequestError } from '@/errors/errors';
-
 import { Notification, NotificationBody } from '@/types/notification';
 
 import notificationModel from './notifications.model';

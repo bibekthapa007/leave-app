@@ -8,7 +8,7 @@ import queryKey from 'constants/queryKey';
 
 export const useLeaveCreditsQuery = (params: DefaultObject = {}) => {
   const leaveCreditsQuery = useQuery({
-    queryKey: [queryKey.fiscalYears],
+    queryKey: [queryKey.leaveCredits],
     queryFn: ({ signal }: Any) => fetchLeaveCredits(params, signal),
     enabled: !!params,
   });

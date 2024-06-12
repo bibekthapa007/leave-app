@@ -6,7 +6,7 @@ import { addToStore, getFromStore } from '@/services/store';
 
 import { verify } from '@/utils/jwt';
 
-import { ForbiddenError, UnauthorizedError } from '@/errors/errors';
+import { UnauthorizedError } from '@/errors/errors';
 
 import { User } from '@/types/user';
 
@@ -23,8 +23,6 @@ const authenticationMiddleware = async (req: Request, res: Response, next: NextF
   }
 
   const userPayload = verify(accessToken) as { data: User };
-
-  console.log(`--${accessToken}--`, userPayload);
 
   const user = await usersServices.fetchUserById(userPayload?.data.id);
 

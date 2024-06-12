@@ -12,9 +12,13 @@ export function up(knex: Knex) {
   return knex.schema.createTable(TABLE_NAME, table => {
     table.bigIncrements('id').primary().unsigned();
 
-    table.integer('role_id').unsigned().notNullable().references('id').inTable('roles');
+    table.specificType('role_id', 'bigint(19)').unsigned().references('id').inTable('roles');
 
-    table.integer('permission_id').unsigned().notNullable().references('id').inTable('permissions');
+    table
+      .specificType('permission_id', 'bigint(19)')
+      .unsigned()
+      .references('id')
+      .inTable('permissions');
 
     table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
 

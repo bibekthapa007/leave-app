@@ -27,6 +27,7 @@ import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery';
 
 import { getDifferenceBetweenDates } from 'utils/date';
 import { handleError } from 'utils/handleError';
+import { getCurrentFiscalYear } from 'utils/fiscalYears';
 
 import { FiscalYear } from 'types/common';
 
@@ -72,11 +73,7 @@ function ApplyLeave() {
 
     const userId = currentUser?.id;
 
-    const fiscalYear = fiscalYears.find(
-      year =>
-        new Date(startDate) >= new Date(year.startDate) &&
-        new Date(endDate) <= new Date(year.endDate)
-    );
+    const fiscalYear = getCurrentFiscalYear(fiscalYears);
 
     if (!fiscalYear?.id) {
       notify({
@@ -102,6 +99,7 @@ function ApplyLeave() {
         type: 'success',
         data: { title: 'Success', message: 'Leave request applied successfully' },
       });
+      history.push(routes.leave);
     } catch (error) {
       handleError(error);
     }

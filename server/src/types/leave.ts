@@ -35,6 +35,7 @@ export interface LeaveCredit {
   userId: number;
   leaveDays: number;
   takenDays: number;
+  defaultDays?: number;
   createdAt: Date;
   createdBy: number;
   updatedAt: Date;

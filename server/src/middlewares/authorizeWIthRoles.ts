@@ -20,6 +20,7 @@ interface AuthorizeOptions {
   extraPrivilegePromises?: ExtraPrivilege[];
   selfAccessor?: string;
   isSelf?: boolean;
+  userId?: number;
 }
 
 export const authorizeWithRoles = ({
@@ -27,12 +28,15 @@ export const authorizeWithRoles = ({
   extraPrivilegePromises = [],
   selfAccessor = 'userId',
   isSelf = false,
+  userId,
 }: AuthorizeOptions) => {
   return [
     async (req: Request, res: Response, next: NextFunction) => {
-      const selfId: number = +(req.method === 'GET'
-        ? req.query[selfAccessor]
-        : req.body[selfAccessor]);
+      const selfId: number =
+        userId ||
+        +(req.method === 'GET'
+          ? req.params[selfAccessor] || req.query[selfAccessor]
+          : req.body[selfAccessor]);
 
       const currentUser = getFromStore('currentUser') as User | undefined;
 
@@ -84,6 +88,7 @@ export const authorizeUserManager = async ({
 
   try {
     const user = await userServices.fetchUserById(userId);
+
     return user.manager?.id === currentUser.id;
   } catch (error) {
     throw new BadRequestError(error);
