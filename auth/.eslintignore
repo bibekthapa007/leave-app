@@ -1,6 +1,0 @@
-node_modules
-dist
-coverage
-.env
-.eslintrc.js
-.tsconfig.json
