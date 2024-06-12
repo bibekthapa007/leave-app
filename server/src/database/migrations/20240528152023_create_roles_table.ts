@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('roles', table => {
     table.bigIncrements('id').primary().unsigned();
 
-    table.string('name', 50).notNullable();
+    table.string('name', 50).unique().notNullable();
 
     table.timestamp('created_at').defaultTo(knex.fn.now());
 
@@ -13,7 +13,7 @@ export async function up(knex: Knex): Promise<void> {
       .unsigned()
       .references('id')
       .inTable('users')
-      .nullable();
+      .notNullable();
 
     table.timestamp('updated_at');
 
