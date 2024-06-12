@@ -6,6 +6,8 @@ import { useEffect } from 'react';
 
 import { updateLeaveStatus } from 'services/leave';
 
+import useUserStore from 'stores/useUserStore';
+
 import Table from 'components/table/Table';
 import { notify } from 'components/Toast';
 
@@ -19,43 +21,71 @@ import { Any } from 'types/common';
 
 import queryKey from 'constants/queryKey';
 
-export interface LeaveTableActionsProps {
-  id: number;
-  updateStatus: UseMutationResult<
-    Any,
-    Error,
-    {
-      id: number;
-      status: LeaveStatusEnum;
-    }
-  >;
+export type UpdateStausType = UseMutationResult<
+  Any,
+  Error,
+  {
+    id: number;
+    status: LeaveStatusEnum;
+  }
+>;
+
+interface LaveTableActionsProps {
+  updateStatus: UpdateStausType;
+  leaveRequest: LeaveRequest;
 }
 
-function LeaveTableActions({ id, updateStatus }: LeaveTableActionsProps) {
+function LeaveTableActions({ leaveRequest, updateStatus }: LaveTableActionsProps) {
+  const { data: currentUser } = useUserStore();
+  const { id, status, user } = leaveRequest;
+
+  const isSelf = user.id === currentUser?.id;
+
   return (
     <Flex>
-      <Button
-        size="sm"
-        colorScheme="green"
-        onClick={() => updateStatus.mutate({ id, status: LeaveStatusEnum.APPROVED })}
-        mr={2}
-      >
-        Approve
-      </Button>
-      <Button
-        size="sm"
-        colorScheme="red"
-        onClick={() => updateStatus.mutate({ id, status: LeaveStatusEnum.REJECTED })}
-      >
-        Reject
-      </Button>
+      {!isSelf && status === LeaveStatusEnum.PENDING && (
+        <Button
+          size="sm"
+          colorScheme="green"
+          onClick={() => updateStatus.mutate({ id, status: LeaveStatusEnum.APPROVED })}
+          mr={2}
+        >
+          Approve
+        </Button>
+      )}
+
+      {!isSelf && status === LeaveStatusEnum.PENDING && (
+        <Button
+          size="sm"
+          colorScheme="red"
+          onClick={() =>
+            updateStatus.mutate({ id: leaveRequest.id, status: LeaveStatusEnum.REJECTED })
+          }
+        >
+          Reject
+        </Button>
+      )}
+
+      {isSelf && status === LeaveStatusEnum.PENDING && (
+        <Button
+          size="sm"
+          colorScheme="red"
+          onClick={() =>
+            updateStatus.mutate({ id: leaveRequest.id, status: LeaveStatusEnum.CANCELED })
+          }
+        >
+          Cancel
+        </Button>
+      )}
     </Flex>
   );
 }
 
 const getLeaveColumns = ({
   updateStatus,
-}: Omit<LeaveTableActionsProps, 'id'>): Array<ColumnDef<LeaveRequest>> => {
+}: {
+  updateStatus: UpdateStausType;
+}): Array<ColumnDef<LeaveRequest>> => {
   return [
     {
       header: 'SN',
@@ -88,10 +118,9 @@ const getLeaveColumns = ({
     },
     {
       header: 'Actions',
-      cell: ({ row: { original } }) =>
-        original.status === 'PENDING' ? (
-          <LeaveTableActions id={original.id} updateStatus={updateStatus} />
-        ) : null,
+      cell: ({ row: { original } }) => (
+        <LeaveTableActions leaveRequest={original} updateStatus={updateStatus} />
+      ),
       size: 160,
     },
   ];

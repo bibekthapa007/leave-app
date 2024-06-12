@@ -8,7 +8,7 @@ import queryKey from 'constants/queryKey';
 
 export const useUserQuery = (id: number, params?: DefaultObject) => {
   const userQuery = useQuery({
-    queryKey: [queryKey.users],
+    queryKey: [queryKey.user],
     queryFn: ({ signal }: Any) => fetchUserById(id, params, signal),
     enabled: !!params,
   });

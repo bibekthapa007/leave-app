@@ -13,6 +13,7 @@ import {
   Text,
   FormErrorMessage,
 } from '@chakra-ui/react';
+import { useHistory } from 'react-router-dom';
 
 import { createLeaveRequest } from 'services/leaveRequest';
 
@@ -28,6 +29,8 @@ import { getDifferenceBetweenDates } from 'utils/date';
 import { handleError } from 'utils/handleError';
 
 import { FiscalYear } from 'types/common';
+
+import routes from 'constants/routes';
 
 interface ApplyLeaveFormValues {
   startDate: string;
@@ -47,6 +50,8 @@ function ApplyLeave() {
     formState: { errors },
     watch,
   } = useForm<ApplyLeaveFormValues>();
+
+  const history = useHistory();
 
   const formStartDate = watch('startDate');
 
@@ -107,7 +112,7 @@ function ApplyLeave() {
   return (
     <DashboardLayout bgColor="gray.80">
       <Container maxW="6xl" px={4}>
-        <Text as="h1" fontWeight="bold" mb={5}>
+        <Text as="h1" fontWeight="bold" py={4}>
           Apply Leave
         </Text>
 
@@ -177,7 +182,19 @@ function ApplyLeave() {
                   />
                   <FormErrorMessage>{errors.reason && errors.reason.message}</FormErrorMessage>
                 </FormControl>
-                <Button type="submit">Submit</Button>
+                <Box>
+                  <Button
+                    type="button"
+                    mx={2}
+                    colorScheme="gray"
+                    onClick={() => history.push(routes.leave)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" colorScheme="purple">
+                    Submit
+                  </Button>
+                </Box>
               </VStack>
             </form>
           </Box>

@@ -33,17 +33,9 @@ export default function SignUp() {
   const history = useHistory();
   const { updateUser } = useUserStore();
   const designationsQuery = useDesignationsQuery({});
-  const {
-    isLoading: isLoadingDesignations,
-    isSuccess: isSuccessDesignations,
-    data: designations = [],
-  } = designationsQuery;
+  const { data: designations = [] } = designationsQuery;
   const countriesQuery = useCountriesQuery({});
-  const {
-    isLoading: isLoadingCountries,
-    isSuccess: isSuccessCountries,
-    data: countries = [],
-  } = countriesQuery;
+  const { data: countries = [] } = countriesQuery;
   const toast = useToast();
 
   const [errors, setErrors] = useState<CustomError[]>([]);
@@ -70,8 +62,9 @@ export default function SignUp() {
 
       history.push(paths.home);
     } catch (error) {
-      const errors = parseError(error);
-      setErrors(errors as CustomError[]);
+      const submitErrors = parseError(error);
+
+      setErrors(submitErrors as CustomError[]);
       toast({
         title: 'An error occurred.',
         description: 'Unable to sign up.',

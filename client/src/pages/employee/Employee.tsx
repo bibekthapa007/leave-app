@@ -1,16 +1,22 @@
 import { Box, Text } from '@chakra-ui/layout';
 import { Spinner, Container } from '@chakra-ui/react';
 import { ColumnDef } from '@tanstack/react-table';
+import { useHistory } from 'react-router-dom';
 
 import DashboardLayout from 'components/DashboardLayout';
 import Table from 'components/table/Table';
 
 import { useUsersQuery } from 'hooks/useUsersQuery';
 
+import { interpolate } from 'utils/interpolate';
+
 import { User } from 'types/User';
+
+import routes from 'constants/routes';
 
 export default function Employee() {
   const usersQuery = useUsersQuery({});
+  const history = useHistory();
 
   const { isLoading, isSuccess, data: users = [] } = usersQuery;
 
@@ -30,6 +36,7 @@ export default function Employee() {
       header: 'Designation',
       accessorKey: 'designationName',
       size: 150,
+      cell: ({ row }) => row.original?.designation?.name,
     },
     {
       header: 'Department',
@@ -84,6 +91,9 @@ export default function Employee() {
           </Text>
           <Table
             loading={false}
+            onRowClick={row =>
+              history.push(interpolate(routes.userProfile, { id: row.original.id }))
+            }
             columns={userColumns}
             data={users}
             emptyMessage="No employee data available."

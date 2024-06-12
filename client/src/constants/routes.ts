@@ -9,6 +9,7 @@ export default {
   leave: createRoute([paths.leave]),
   applyleave: createRoute([paths.leave, paths.apply]),
   profile: createRoute([paths.profile]),
+  userProfile: createRoute([paths.profile, ':id']),
   employee: createRoute([paths.employee]),
   leavebalance: createRoute([paths.leave, paths.balance]),
   leaveTypes: createRoute([paths.leaveTypes]),

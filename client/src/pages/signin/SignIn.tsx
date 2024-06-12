@@ -38,9 +38,9 @@ export default function SignIn() {
 
       history.push(paths.home);
     } catch (error) {
-      const errors = parseError(error);
+      const submitErrors = parseError(error);
 
-      setErrors(errors as CustomError[]);
+      setErrors(submitErrors as CustomError[]);
     } finally {
       setIsSubmitting(false);
     }

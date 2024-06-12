@@ -14,42 +14,52 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 import { updateUserById } from 'services/users';
+
+import useUserStore from 'stores/useUserStore';
 
 import DashboardLayout from 'components/DashboardLayout';
 import { notify } from 'components/Toast';
 
 import { useRolesQuery } from 'hooks/useRolesQuery';
 import { useDesignationsQuery } from 'hooks/useDesignationsQuery';
-import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery';
+import { useUsersQuery } from 'hooks/useUsersQuery';
+import { useUserQuery } from 'hooks/useUserQuery';
 
 import { handleError } from 'utils/handleError';
 
-import { Any, Role } from 'types/common';
+import { Any, Role, Roles } from 'types/common';
 
 import queryKey from 'constants/queryKey';
 
 function Profile() {
   const designationsQuery = useDesignationsQuery({});
   const rolesQuery = useRolesQuery({});
-  const { handleSubmit, register, setValue } = useForm();
-  const [currentUserRoles, setCurrentUserRoles] = useState<number[]>([]);
+  const { handleSubmit, register, reset, setValue, formState } = useForm();
+  const [userRoles, setUserRoles] = useState<number[]>([]);
+
+  const { id: userId } = useParams<{ id: string }>();
+  const { data: currentUser } = useUserStore();
+
+  const profileId = parseInt(userId, 10) || (currentUser?.id as number);
 
   const { data: designations = [] } = designationsQuery;
   const { data: roles = [] } = rolesQuery;
-  const { data: currentUser } = useCurrentUserQuery();
+  const { data: user } = useUserQuery(profileId, {});
+  const { data: managers } = useUsersQuery({ role: Roles.MANAGER, excludeIds: profileId });
 
   const queryClient = useQueryClient();
 
   const updateUser = useMutation({
-    mutationFn: (user: Any) => {
-      return updateUserById(currentUser?.id as number, user);
+    mutationFn: (body: Any) => {
+      return updateUserById(user?.id as number, body);
     },
 
     onSuccess: () => {
       notify({ type: 'success', autoClose: 0, data: { title: 'Success', message: 'Success' } });
-      queryClient.invalidateQueries({ queryKey: [queryKey.currentUser] });
+      queryClient.invalidateQueries({ queryKey: [queryKey.user] });
     },
 
     onError: error => {
@@ -58,31 +68,42 @@ function Profile() {
   });
 
   useEffect(() => {
-    if (currentUser) {
-      const userRoles = currentUser.roles.map((role: Role) => role.id);
-      setCurrentUserRoles(userRoles);
+    if (user) {
+      const newUserRoles = user.roles.map((role: Role) => role.id);
+      setUserRoles(newUserRoles);
 
-      setValue('name', currentUser?.name || '');
-      setValue('email', currentUser?.email || '');
-      setValue('designation', currentUser?.designation?.id || '');
-      setValue('roles', userRoles);
+      const defaultValues = {
+        name: user?.name || '',
+        phone: user?.phone || '',
+        email: user?.email || '',
+        department: user?.department || '',
+        designationId: user?.designation?.id || '',
+        managerId: user?.manager?.id || '',
+        roleIds: newUserRoles,
+      };
+
+      reset(defaultValues, { keepDirty: false });
     }
-  }, [currentUser]);
+  }, [user]);
 
   const onRoleChange = (e: React.ChangeEvent<HTMLInputElement>, role: Role) => {
     const roleId = role.id;
     const isChecked = e.target.checked;
 
-    const updatedRoles = isChecked
-      ? [...currentUserRoles, roleId]
-      : currentUserRoles.filter(id => id !== roleId);
+    const updatedRoles = isChecked ? [...userRoles, roleId] : userRoles.filter(id => id !== roleId);
 
-    setCurrentUserRoles(updatedRoles);
-    setValue('roles', updatedRoles);
+    setUserRoles(updatedRoles);
+    setValue('roleIds', updatedRoles);
   };
 
   const onSubmit = (formData: Any) => {
-    updateUser.mutate(formData);
+    const data = { ...formData };
+
+    if (!formData.managerId) {
+      delete data.managerId;
+    }
+
+    updateUser.mutate(data);
   };
 
   return (
@@ -92,29 +113,40 @@ function Profile() {
           <Text as="h1" fontWeight="bold" mb={5} mt={5}>
             Profile
           </Text>
+
           <Container bgColor="white" p={10} borderRadius="md" boxShadow="md" maxW="6xl" w="full">
             <form onSubmit={handleSubmit(onSubmit)}>
               <VStack spacing={6} align="stretch" w="100%">
                 <FormControl id="name">
                   <FormLabel>Name</FormLabel>
-                  <Input type="text" defaultValue={currentUser?.name || ''} {...register('name')} />
+                  <Input type="text" defaultValue={user?.name || ''} {...register('name')} />
                 </FormControl>
 
                 <FormControl id="email">
                   <FormLabel>Email</FormLabel>
+                  <Input type="email" defaultValue={user?.email || ''} {...register('email')} />
+                </FormControl>
+
+                <FormControl id="phone">
+                  <FormLabel>Phone</FormLabel>
+                  <Input type="text" defaultValue={user?.phone || ''} {...register('phone')} />
+                </FormControl>
+
+                <FormControl id="department">
+                  <FormLabel>Department</FormLabel>
                   <Input
-                    type="email"
-                    defaultValue={currentUser?.email || ''}
-                    {...register('email')}
+                    type="text"
+                    defaultValue={user?.department || ''}
+                    {...register('department')}
                   />
                 </FormControl>
 
-                <FormControl id="designation">
+                <FormControl id="designationId">
                   <FormLabel>Designation</FormLabel>
                   <Select
                     placeholder="Select your designation"
-                    defaultValue={currentUser?.designation?.id}
-                    {...register('designation')}
+                    defaultValue={user?.designation?.id}
+                    {...register('designationId')}
                   >
                     {designations.map(option => (
                       <option key={option.id} value={option.id}>
@@ -124,13 +156,28 @@ function Profile() {
                   </Select>
                 </FormControl>
 
-                <FormControl id="role">
+                <FormControl id="managerId">
+                  <FormLabel>Manager</FormLabel>
+                  <Select
+                    placeholder="Select the manager"
+                    defaultValue={user?.manager?.id}
+                    {...register('managerId')}
+                  >
+                    {managers?.map(option => (
+                      <option key={option.id} value={option.id}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl id="roleIds">
                   <FormLabel>Roles</FormLabel>
                   <VStack align="start">
                     {roles.map((role: Role) => (
                       <Checkbox
                         key={role.id}
-                        isChecked={currentUserRoles.includes(role.id)}
+                        isChecked={userRoles.includes(role.id)}
                         onChange={e => onRoleChange(e, role)}
                       >
                         {role.name}
@@ -139,7 +186,13 @@ function Profile() {
                   </VStack>
                 </FormControl>
 
-                <Button type="submit" bg="#4f46e5" _hover={{ bg: '#6366f1' }} color="white">
+                <Button
+                  type="submit"
+                  bg="#4f46e5"
+                  _hover={{ bg: '#6366f1' }}
+                  color="white"
+                  isDisabled={!formState.isDirty}
+                >
                   Save
                 </Button>
               </VStack>

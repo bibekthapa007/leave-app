@@ -32,6 +32,8 @@ function Home() {
 
       <Route exact path={routes.profile} component={Profile} />
 
+      <Route exact path={routes.userProfile} component={Profile} />
+
       <ProtectedRoute
         exact
         path={routes.employee}

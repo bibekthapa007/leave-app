@@ -3,6 +3,7 @@ export default {
   balance: 'balance',
   designations: 'designations',
   roles: 'roles',
+  user: 'user',
   users: 'users',
   countries: 'countries',
   leaveTypes: 'leave-types',
