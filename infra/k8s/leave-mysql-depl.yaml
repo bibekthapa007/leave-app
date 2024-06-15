@@ -14,16 +14,30 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: mysql:5.7
+          image: mysql:8.0.32
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: root_password
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
-              value: leavedb
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_DATABASE
             - name: MYSQL_USER
-              value: leaveuser
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_USER
             - name: MYSQL_PASSWORD
-              value: leavepassword
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_INITDB_SKIP_TZINFO
+              value: "1"
           ports:
             - containerPort: 3306
           volumeMounts:
