@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "cross-env NODE_ENV=development nodemon",
-    "start": "node -r newrelic -r ts-node/register/transpile-only -r tsconfig-paths/register dist/src/index.js",
+    "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon",
     "transpile": "tsc",
     "clean": "rimraf dist",
@@ -50,6 +50,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "nodemon": "^3.0.3",
     "prettier": "^3.2.5",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "*",
     "yarn": "^1.22.21"
