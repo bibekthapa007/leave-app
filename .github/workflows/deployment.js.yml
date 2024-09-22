@@ -41,9 +41,9 @@ jobs:
       - name: Start server
         run: |
           cd server
-          pm2 start server.js --name "server" --watch
+          pm2 restart server
 
       - name: Start app
         run: |
           cd client
-          pm2 start npm --name "app" -- start
+          pm2 restart app
