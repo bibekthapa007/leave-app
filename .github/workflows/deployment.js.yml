@@ -1,0 +1,54 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
+      - name: Install server Dependencies
+        run: |
+          cd server
+          yarn install --frozen-lockfile
+
+      - name: Install app Dependencies
+        run: |
+          cd app
+          yarn install --frozen-lockfile
+
+      - name: Build app
+        run: |
+          cd app
+          yarn build
+
+      - name: Set Up Environment
+        run: |
+          touch server/.env
+          echo "${{ secrets.PROD }}" > server/.env
+
+      - name: Start server
+        run: |
+          cd server
+          pm2 start server.js --name "server" --watch
+
+      - name: Start app
+        run: |
+          cd app
+          pm2 start npm --name "app" -- start
